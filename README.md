@@ -215,6 +215,26 @@ This application is designed to work with:
 - **Cloud Run**: Serverless agent for data processing and API
 - **Agent Chaining**: Geocoding and alerting services
 
+### Deploying the Backend Agent
+
+An example Cloud Run agent implementation is provided in the `examples/` directory:
+
+```bash
+# Deploy to Cloud Run
+cd examples/
+gcloud builds submit --tag gcr.io/YOUR_PROJECT_ID/nyc-restaurants-agent
+gcloud run deploy nyc-restaurants-agent \
+  --image gcr.io/YOUR_PROJECT_ID/nyc-restaurants-agent \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated
+
+# Set the service URL
+export NYC_RESTAURANTS_AGENT_URL="https://your-service-url.run.app"
+```
+
+See `examples/README.md` for detailed deployment instructions.
+
 ## Contributing
 
 1. Fork the repository
