@@ -78,19 +78,16 @@
 
 ## Frontend
 
-### Setup & Configuration
-- [Docker Setup Guide](frontend/DOCKER_SETUP.md)
-  - Multi-stage Docker build
-  - Production server setup
+- [Frontend Guide](frontend/README.md)
+  - React + Vite setup
+  - Development workflow
+  - Production builds
+  - Docker deployment
+  - Multi-stage builds
   - Environment configuration
-  - Management scripts
-  - Troubleshooting
-
-- Frontend Development (see `../frontend/README.md` in project root)
-  - React + Vite configuration
   - Component structure
   - API integration
-  - Building and deployment
+  - Troubleshooting
 
 ## Development
 

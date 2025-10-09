@@ -1,6 +1,6 @@
 # NYC Restaurants Frontend
 
-> **📚 Docker setup documentation is available at [`docs/frontend/DOCKER_SETUP.md`](../docs/frontend/DOCKER_SETUP.md)**
+> **📚 Full documentation is available at [`docs/frontend/README.md`](../docs/frontend/README.md)**
 
 React + Vite frontend for querying NYC restaurant health inspection data.
 
@@ -49,8 +49,9 @@ VITE_GOOGLE_MAPS_API_KEY=your_key_here
 
 ## Documentation
 
-- **[Docker Setup Guide](../docs/frontend/DOCKER_SETUP.md)** - Complete Docker configuration
+- **[Frontend Guide](../docs/frontend/README.md)** - Complete documentation
 - **[Scripts Guide](../docs/scripts/README.md)** - Management scripts
+- **[Docker Guide](../docs/docker/README.md)** - Docker setup
 
 ## Tech Stack
 
@@ -67,4 +68,4 @@ VITE_GOOGLE_MAPS_API_KEY=your_key_here
 - `bun run preview` - Preview production build
 - `bun run lint` - Lint code
 
-For more details, see the [Docker Setup Guide](../docs/frontend/DOCKER_SETUP.md).
+For more details, see the [Frontend Guide](../docs/frontend/README.md).

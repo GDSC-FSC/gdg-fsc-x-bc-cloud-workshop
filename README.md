@@ -219,7 +219,7 @@ gdg-fsc-x-bc-cloud-workshop/
     ├── docker/                   # Docker documentation
     │   └── README.md
     ├── frontend/                 # Frontend documentation
-    │   └── DOCKER_SETUP.md
+    │   └── README.md
     └── scripts/                  # Scripts documentation
         └── README.md
 ```

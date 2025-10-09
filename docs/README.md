@@ -45,7 +45,7 @@ This workshop demonstrates a full-stack cloud application using Docker, PostgreS
 - **Scripts & Utilities:** [Scripts Guide](scripts/README.md)
 - **Database & Data Loading:** [Database Guide](database/README.md)
 - **Docker Configuration:** [Docker Setup](docker/README.md)
-- **Frontend Development:** [Frontend Docker Setup](frontend/DOCKER_SETUP.md)
+- **Frontend Development:** [Frontend Guide](frontend/README.md)
 - **API Development & Security:** [API Documentation](api/README.md)
   - [Security Features](api/SECURITY.md)
   - [Security Quick Reference](api/SECURITY_QUICK_REFERENCE.md)
@@ -109,7 +109,7 @@ This workshop demonstrates a full-stack cloud application using Docker, PostgreS
 - [Scripts & Utilities](scripts/README.md)
 - [Database Schema & Queries](database/README.md)
 - [Docker Setup & Troubleshooting](docker/README.md)
-- [Frontend Docker Setup](frontend/DOCKER_SETUP.md)
+- [Frontend Development & Deployment](frontend/README.md)
 - [API Architecture & Endpoints](api/README.md)
 - [Security Implementation](api/SECURITY.md)
 

@@ -75,28 +75,42 @@ npm run start
 
 ## Docker Deployment
 
-### Build Docker Image
+### Quick Start with Management Script
 
 ```bash
-docker build -t gdg-frontend:latest .
+# Build and run
+./scripts/frontend.sh start
+
+# View logs
+./scripts/frontend.sh logs
+
+# Check status
+./scripts/frontend.sh status
+
+# Stop
+./scripts/frontend.sh stop
 ```
 
-### Run Container
+### Using Docker Compose (Recommended)
+
+From the project root:
 
 ```bash
+docker-compose up -d frontend
+```
+
+### Manual Docker Commands
+
+```bash
+# Build
+docker build -t gdg-frontend:latest frontend/
+
+# Run
 docker run -d \
   -p 3000:3000 \
   -e VITE_API_URL=http://localhost:8080 \
   --name frontend \
   gdg-frontend:latest
-```
-
-### Using Docker Compose
-
-From the root directory:
-
-```bash
-docker-compose up -d frontend
 ```
 
 ## Project Structure
@@ -145,18 +159,28 @@ VITE_API_URL=http://localhost:8080
 | `VITE_API_URL` | Backend API base URL | `http://localhost:8080` |
 | `VITE_GOOGLE_MAPS_API_KEY` | Google Maps API key | - |
 
-## Docker Multi-Stage Build
+## Docker Architecture
 
-The Dockerfile uses a two-stage build:
+### Multi-Stage Build
 
-1. **Build Stage** - Uses Bun (Alpine) to build the app
-2. **Runtime Stage** - Uses Node.js (Alpine) with Express server
+The Dockerfile uses an optimized two-stage build:
 
-Benefits:
-- Smaller final image size
-- Faster builds with Bun
-- Secure runtime with non-root user
-- Production-optimized Express server
+1. **Build Stage** (Bun 1.0 Alpine)
+   - Install dependencies with Bun
+   - Build production bundle
+   - Output to `dist/`
+
+2. **Runtime Stage** (Node.js 20 Alpine)
+   - Install production dependencies only
+   - Copy built assets from stage 1
+   - Run Express server as non-root user
+   - Health checks enabled
+
+### Benefits
+- **Small image size**: ~150MB final image (vs ~1.2GB build stage)
+- **Fast builds**: Bun for dependency installation
+- **Secure**: Non-root user, minimal attack surface
+- **Production-ready**: Express server with SPA routing
 
 ## Troubleshooting
 
