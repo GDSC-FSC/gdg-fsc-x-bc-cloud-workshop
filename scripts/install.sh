@@ -169,6 +169,62 @@ install_bun() {
     esac
 }
 
+install_gcloud() {
+    case "$(uname -s)" in
+        Linux)
+            if command_exists apt-get; then
+                log_info "Installing Google Cloud SDK on Debian/Ubuntu..."
+                sudo apt-get update
+                sudo apt-get install -y apt-transport-https ca-certificates gnupg
+                echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+                curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+                sudo apt-get update
+                sudo apt-get install -y google-cloud-cli
+                log_success "Google Cloud SDK installed."
+            elif command_exists yum; then
+                log_info "Installing Google Cloud SDK on RHEL/CentOS..."
+                sudo tee -a /etc/yum.repos.d/google-cloud-sdk.repo << EOM
+[google-cloud-cli]
+name=Google Cloud CLI
+baseurl=https://packages.cloud.google.com/yum/repos/cloud-sdk-el8-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=0
+gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOM
+                sudo yum install -y google-cloud-cli
+                log_success "Google Cloud SDK installed."
+            elif command_exists pacman; then
+                log_info "Installing Google Cloud SDK on Arch Linux..."
+                sudo pacman -Syu --noconfirm google-cloud-sdk
+                log_success "Google Cloud SDK installed."
+            else
+                log_info "Installing Google Cloud SDK via install script..."
+                curl https://sdk.cloud.google.com | bash
+                exec -l $SHELL
+                log_success "Google Cloud SDK installed. Restart your shell."
+            fi
+            ;;
+        Darwin)
+            log_info "Installing Google Cloud SDK on macOS..."
+            if ! command_exists brew; then
+                log_info "Homebrew not found. Installing Homebrew..."
+                /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            fi
+            brew install --cask google-cloud-sdk
+            log_success "Google Cloud SDK installed."
+            ;;
+        MINGW*|CYGWIN*|MSYS*)
+            log_info "For Windows, install Google Cloud SDK from: https://cloud.google.com/sdk/docs/install"
+            log_info "Or use: (New-Object Net.WebClient).DownloadFile('https://dl.google.com/dl/cloudsdk/channels/rapid/GoogleCloudSDKInstaller.exe', '$env:Temp\GoogleCloudSDKInstaller.exe') & & $env:Temp\GoogleCloudSDKInstaller.exe"
+            ;;
+        *)
+            log_error "Unsupported OS for Google Cloud SDK: $(uname -s)"
+            exit 1
+            ;;
+    esac
+}
+
 # Check and install dependencies
 if ! command_exists docker; then
     if prompt "Docker is not installed. Install it?"; then
@@ -194,6 +250,14 @@ if ! command_exists bun; then
     else
         log_error "Bun is required. Exiting."
         exit 1
+    fi
+fi
+
+if ! command_exists gcloud; then
+    if prompt "Google Cloud SDK is not installed. Install it?"; then
+        install_gcloud
+    else
+        log_warn "Google Cloud SDK is recommended for deployment. Skipping."
     fi
 fi
 
