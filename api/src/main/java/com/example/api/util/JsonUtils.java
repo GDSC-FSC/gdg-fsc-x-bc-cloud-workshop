@@ -6,26 +6,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-/**
- * Utility class for JSON serialization and deserialization using Jackson.
- */
+/** Utility class for JSON serialization and deserialization using Jackson. */
 public class JsonUtils {
 
-  /**
-   * The ObjectMapper instance configured for JSON operations.
-   */
-  public static final ObjectMapper MAPPER = new ObjectMapper()
-      .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-      .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-      .configure(SerializationFeature.INDENT_OUTPUT, true)
-      .registerModule(new JavaTimeModule());
+  /** The ObjectMapper instance configured for JSON operations. */
+  public static final ObjectMapper MAPPER =
+      new ObjectMapper()
+          .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+          .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+          .configure(SerializationFeature.INDENT_OUTPUT, true)
+          .registerModule(new JavaTimeModule());
 
   /**
    * Deserializes a JSON string into an object of the specified class.
    *
-   * @param json  the JSON string to deserialize
+   * @param json the JSON string to deserialize
    * @param clazz the class of the object to deserialize into
-   * @param <T>   the type of the object
+   * @param <T> the type of the object
    * @return the deserialized object
    * @throws RuntimeException if an error occurs during deserialization
    */

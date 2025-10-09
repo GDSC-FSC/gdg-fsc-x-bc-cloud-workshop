@@ -1,15 +1,102 @@
 # Table of Contents
 
+## Overview
 - [Project Introduction](README.md)
+  - Architecture overview
+  - Technology stack
+  - Key features
+  - Getting started
+
+## Infrastructure
+
+### Database
 - [Database Guide](database/README.md)
   - Overview of data loading and schema
   - How to run the loader script
   - Example queries and tips
+  - Table structure and indexes
+
+### Docker
 - [Docker Setup](docker/README.md)
   - Setting up PostgreSQL in Docker
   - Creating networks and volumes
   - Troubleshooting tips
+  - Container management
 
----
+## Backend API
 
-For frontend and backend instructions, see the respective README files in the project root.
+### Core Documentation
+- [API Overview](api/README.md)
+  - Architecture & design
+  - API endpoints
+  - Building & running
+  - Configuration
+  - Testing
+
+### Architecture & Design
+- [Package Structure](api/PACKAGE_STRUCTURE.md)
+  - Complete package overview
+  - Design patterns
+  - Component interactions
+  - Request flow diagrams
+
+- [Additional Components](api/ADDITIONAL_COMPONENTS.md)
+  - Model package (enums)
+  - Implementations package
+  - Web package components
+  - Benefits and usage examples
+
+### Security
+- [Security Documentation](api/SECURITY.md)
+  - Security features overview
+  - Input validation & sanitization
+  - Rate limiting
+  - Security headers
+  - CORS configuration
+  - API key authentication
+  - SQL injection prevention
+  - Production checklist
+  - Incident response
+
+- [Security Quick Reference](api/SECURITY_QUICK_REFERENCE.md)
+  - Quick start guide
+  - Configuration examples
+  - Testing commands
+  - Common issues
+  - Production checklist
+
+## Frontend
+- Frontend Setup (see `../frontend/README.md` in project root)
+  - React + Vite configuration
+  - Component structure
+  - API integration
+  - Building and deployment
+
+## Development
+
+### Getting Started
+1. [Database Setup](database/README.md) - Set up PostgreSQL
+2. [API Setup](api/README.md) - Build and run the API
+3. [Frontend Setup](../frontend/README.md) - Start the web interface
+
+### Testing
+- [API Testing](api/README.md#testing-the-api) - Test scripts and examples
+- [Security Testing](api/SECURITY.md#-security-testing) - Security validation tests
+
+### Deployment
+- [Docker Deployment](docker/README.md) - Container-based deployment
+- [API Configuration](api/README.md#configuration) - Production settings
+- [Security Configuration](api/SECURITY.md#-security-checklist) - Security hardening
+
+## Resources
+
+### External Documentation
+- [NYC Open Data API](https://data.cityofnewyork.us/resource/43nn-pn8j.geojson)
+- [Spring Boot Docs](https://docs.spring.io/spring-boot/docs/current/reference/html/)
+- [PostgreSQL Docs](https://www.postgresql.org/docs/current/)
+- [Docker Docs](https://docs.docker.com/)
+
+### Project Resources
+- Repository: [GDSC-FSC/gdg-fsc-x-bc-cloud-workshop](https://github.com/GDSC-FSC/gdg-fsc-x-bc-cloud-workshop)
+- Issues: [GitHub Issues](https://github.com/GDSC-FSC/gdg-fsc-x-bc-cloud-workshop/issues)
+- License: MIT
