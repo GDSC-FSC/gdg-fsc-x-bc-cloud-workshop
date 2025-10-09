@@ -103,14 +103,14 @@ install_docker() {
             fi
             brew install --cask docker
             log_success "Docker Desktop installed. Launch Docker Desktop to complete setup."
-        ;;
-    MINGW*|CYGWIN*|MSYS*)
-        log_info "For Windows, install Docker Desktop from: https://www.docker.com/products/docker-desktop"
-        ;;
-    *)
-        log_error "Unsupported OS: $(uname -s)"
-        exit 1
-        ;;
+            ;;
+        MINGW*|CYGWIN*|MSYS*)
+            log_info "For Windows, install Docker Desktop from: https://www.docker.com/products/docker-desktop"
+            ;;
+        *)
+            log_error "Unsupported OS: $(uname -s)"
+            exit 1
+            ;;
     esac
 }
 

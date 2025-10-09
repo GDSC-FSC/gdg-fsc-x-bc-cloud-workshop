@@ -40,7 +40,7 @@ function App() {
         message: `Found ${response.count || 0} restaurant${response.count !== 1 ? 's' : ''}`
       });
       console.log(`✅ Search Complete: Found ${response.count || 0} restaurant${response.count !== 1 ? 's' : ''}`);
-      
+
       // Auto-hide notification after 3 seconds
       setTimeout(() => setNotification(null), 3000);
     } catch (error) {
