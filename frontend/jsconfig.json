@@ -1,0 +1,49 @@
+{
+  "compilerOptions": {
+    /* Module + language targets */
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+
+    /* React JSX (works in JS projects too) */
+    "jsx": "react-jsx",
+
+    /* Interop + ergonomics */
+    "allowJs": true,
+    "checkJs": false,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+
+    /* Path aliases */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+
+    /* Ambient types for tooling (adjust as needed) */
+    "types": ["vite/client", "node", "bun"]
+  },
+  "include": [
+    "src",
+    "vite.config.*",
+    "vitest.config.*",
+    "eslint.config.*",
+    "postcss.config.*",
+    "tailwind.config.*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    ".next",
+    ".turbo",
+    "coverage",
+    "**/*.ts",
+    "**/*.tsx"
+  ]
+}

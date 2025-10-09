@@ -204,9 +204,9 @@ if lsof -i :3000 >/dev/null 2>&1; then
 fi
 
 # Check if container exists
-if docker ps -a --format '{{.Names}}' | grep -q '^website-2025$'; then
-    log_warn "Container 'website-2025' already exists. Removing it..."
-    docker rm -f website-2025
+if docker ps -a --format '{{.Names}}' | grep -q '^<>$'; then
+    log_warn "Container '<>' already exists. Removing it..."
+    docker rm -f <>
 fi
 
 # Pull image if not present
@@ -217,9 +217,9 @@ fi
 
 # Run the container
 log_info "Starting development server in Docker..."
-docker run -d --name website-2025 -p 3000:3000 -v "$(pwd)":/app -w /app node:24-alpine bun run dev
+docker run -d --name <> -p 3000:3000 -v "$(pwd)":/app -w /app node:24-alpine bun run dev
 if [ $? -eq 0 ]; then
-    log_success "Container 'website-2025' started on port 3000."
+    log_success "Container '<>' started on port 3000."
 else
     log_error "Failed to start the container."
     exit 1
