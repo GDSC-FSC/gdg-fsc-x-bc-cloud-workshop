@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * @file google-map.tsx
+ * @file google-map.jsx
  * @fileoverview A comprehensive Google Maps component for displaying locations with clustering, filtering, and interactive markers.
  * The component includes features like:
  * - Marker clustering for better visualization of dense areas
@@ -18,55 +18,53 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { MarkerClusterer } from '@googlemaps/markerclusterer';
-import { APIProvider, InfoWindow, Map, type MapProps, useMap } from '@vis.gl/react-google-maps';
+import { APIProvider, InfoWindow, Map, useMap } from '@vis.gl/react-google-maps';
 import { AnimatePresence, motion } from 'motion/react';
+import PropTypes from 'prop-types';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FaCalendarAlt, FaMapMarkerAlt } from 'react-icons/fa';
 
 /**
- * Interface for location information
+ * PropTypes definitions for the component
  */
-export interface LocationInfo {
-  id: string;
-  name: string;
-  coordinates: [number, number]; // [latitude, longitude]
-  status: 'Active' | 'Inactive' | 'Special';
-  establishedDate?: string;
-  description?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  country?: string;
-  notes?: string;
-  category?: string;
-}
+const LocationInfoPropType = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  coordinates: PropTypes.arrayOf(PropTypes.number).isRequired, // [latitude, longitude]
+  status: PropTypes.oneOf(['Active', 'Inactive', 'Special']).isRequired,
+  establishedDate: PropTypes.string,
+  description: PropTypes.string,
+  address: PropTypes.string,
+  city: PropTypes.string,
+  state: PropTypes.string,
+  country: PropTypes.string,
+  notes: PropTypes.string,
+  category: PropTypes.string,
+});
 
-/**
- * Interface for location data structure
- */
-export interface LocationData {
-  active: LocationInfo[];
-  inactive: LocationInfo[];
-  special: LocationInfo[];
-}
+const LocationDataPropType = PropTypes.shape({
+  active: PropTypes.arrayOf(LocationInfoPropType).isRequired,
+  inactive: PropTypes.arrayOf(LocationInfoPropType).isRequired,
+  special: PropTypes.arrayOf(LocationInfoPropType).isRequired,
+});
 
-/**
- * Props for the main GoogleMaps component
- */
-interface GoogleMapsProps {
-  locations: LocationData;
-  center?: { lat: number; lng: number };
-  bounds?: {
-    north: number;
-    south: number;
-    west: number;
-    east: number;
-  };
-  mapStyles?: google.maps.MapTypeStyle[];
-  minZoom?: number;
-  maxZoom?: number;
-  defaultZoom?: number;
-}
+const CoordinatesPropType = PropTypes.shape({
+  lat: PropTypes.number.isRequired,
+  lng: PropTypes.number.isRequired,
+});
+
+const BoundsPropType = PropTypes.shape({
+  north: PropTypes.number.isRequired,
+  south: PropTypes.number.isRequired,
+  west: PropTypes.number.isRequired,
+  east: PropTypes.number.isRequired,
+});
+
+const MapStylePropType = PropTypes.shape({
+  featureType: PropTypes.string,
+  elementType: PropTypes.string,
+  stylers: PropTypes.arrayOf(PropTypes.object),
+});
 
 /**
  * Color configurations for different location statuses.
@@ -117,7 +115,7 @@ const DEFAULT_MAP_STYLES = [
 /**
  * Main Google Maps component that displays locations with filtering capabilities.
  */
-export const GoogleMaps = memo<GoogleMapsProps>(({
+export const GoogleMaps = memo(({
   locations,
   center = DEFAULT_CENTER,
   bounds = DEFAULT_BOUNDS,
@@ -127,10 +125,10 @@ export const GoogleMaps = memo<GoogleMapsProps>(({
   defaultZoom = 4
 }) => {
   const { toast } = useToast();
-  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const mapContainerRef = useRef(null);
   const [mapZoom, setMapZoom] = useState(defaultZoom);
   const [isLoading, setIsLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState<string>('All');
+  const [statusFilter, setStatusFilter] = useState('All');
 
   /**
    * Disables page scrolling when mouse enters map container
@@ -171,7 +169,7 @@ export const GoogleMaps = memo<GoogleMapsProps>(({
    * Get unique statuses from locations
    */
   const availableStatuses = useMemo(() => {
-    const statuses = new Set<string>();
+    const statuses = new Set();
     [...locations.active, ...locations.inactive, ...locations.special].forEach(location => {
       statuses.add(location.status);
     });
@@ -182,22 +180,21 @@ export const GoogleMaps = memo<GoogleMapsProps>(({
    * Memoized map options for Google Maps configuration
    */
   const mapOptions = useMemo(
-    () =>
-      ({
-        gestureHandling: 'cooperative',
-        restriction: {
-          latLngBounds: bounds,
-          strictBounds: false,
-        },
-        disableDefaultUI: false,
-        zoomControl: true,
-        mapTypeControl: false,
-        streetViewControl: false,
-        fullscreenControl: false,
-        styles: mapStyles,
-        minZoom,
-        maxZoom,
-      }) as MapProps,
+    () => ({
+      gestureHandling: 'cooperative',
+      restriction: {
+        latLngBounds: bounds,
+        strictBounds: false,
+      },
+      disableDefaultUI: false,
+      zoomControl: true,
+      mapTypeControl: false,
+      streetViewControl: false,
+      fullscreenControl: false,
+      styles: mapStyles,
+      minZoom,
+      maxZoom,
+    }),
     [bounds, mapStyles, minZoom, maxZoom],
   );
 
@@ -268,23 +265,25 @@ export const GoogleMaps = memo<GoogleMapsProps>(({
   );
 });
 
-/**
- * Props interface for Markers component
- */
-type MarkersProps = {
-  locations: LocationData;
-  mapZoom: number;
-  statusFilter: string;
-  bounds: typeof DEFAULT_BOUNDS;
+GoogleMaps.propTypes = {
+  locations: LocationDataPropType.isRequired,
+  center: CoordinatesPropType,
+  bounds: BoundsPropType,
+  mapStyles: PropTypes.arrayOf(MapStylePropType),
+  minZoom: PropTypes.number,
+  maxZoom: PropTypes.number,
+  defaultZoom: PropTypes.number,
 };
+
+GoogleMaps.displayName = 'GoogleMaps';
 
 /**
  * Component that handles the rendering and management of map markers and clustering
  */
-const Markers: React.FC<MarkersProps> = memo(({ locations, mapZoom, statusFilter, bounds }) => {
+const Markers = memo(({ locations, mapZoom, statusFilter, bounds }) => {
   const map = useMap();
-  const [activeMarker, setActiveMarker] = useState<string | null>(null);
-  const clusterer = useRef<MarkerClusterer | null>(null);
+  const [activeMarker, setActiveMarker] = useState(null);
+  const clusterer = useRef(null);
 
   /**
    * Filtered and processed locations based on status filter and geographic bounds
@@ -309,7 +308,7 @@ const Markers: React.FC<MarkersProps> = memo(({ locations, mapZoom, statusFilter
   /**
    * Handles marker click events
    */
-  const handleMarkerClick = useCallback((locationId: string) => {
+  const handleMarkerClick = useCallback((locationId) => {
     setActiveMarker((prev) => (prev === locationId ? null : locationId));
   }, []);
 
@@ -419,7 +418,7 @@ const Markers: React.FC<MarkersProps> = memo(({ locations, mapZoom, statusFilter
             onCloseClick={() => setActiveMarker(null)}
           >
             <LocationInfo 
-              location={filteredLocations.find((location) => location.id === activeMarker)!} 
+              location={filteredLocations.find((location) => location.id === activeMarker)} 
             />
           </InfoWindow>
         )}
@@ -428,10 +427,19 @@ const Markers: React.FC<MarkersProps> = memo(({ locations, mapZoom, statusFilter
   );
 });
 
+Markers.propTypes = {
+  locations: LocationDataPropType.isRequired,
+  mapZoom: PropTypes.number.isRequired,
+  statusFilter: PropTypes.string.isRequired,
+  bounds: BoundsPropType.isRequired,
+};
+
+Markers.displayName = 'Markers';
+
 /**
  * Component that displays detailed information about a location in an info window
  */
-const LocationInfo: React.FC<{ location: LocationInfo }> = memo(({ location }) => (
+const LocationInfo = memo(({ location }) => (
   <motion.div
     initial={{ opacity: 0, y: -20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -497,10 +505,16 @@ const LocationInfo: React.FC<{ location: LocationInfo }> = memo(({ location }) =
   </motion.div>
 ));
 
+LocationInfo.propTypes = {
+  location: LocationInfoPropType.isRequired,
+};
+
+LocationInfo.displayName = 'LocationInfo';
+
 /**
  * Creates a custom marker element with specified background color
  */
-function createMarkerContent(bgColor: string) {
+function createMarkerContent(bgColor) {
   const div = document.createElement('div');
   div.innerHTML = `
     <div style="
@@ -520,7 +534,7 @@ function createMarkerContent(bgColor: string) {
 /**
  * Creates an SVG string for standard markers (fallback)
  */
-function createMarkerSVG(bgColor: string): string {
+function createMarkerSVG(bgColor) {
   return `
     <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
       <circle cx="16" cy="16" r="12" fill="${bgColor}" stroke="white" stroke-width="2"/>
@@ -532,7 +546,7 @@ function createMarkerSVG(bgColor: string): string {
 /**
  * Creates a custom cluster marker element with a count
  */
-function createClusterMarkerContent(count: number) {
+function createClusterMarkerContent(count) {
   const div = document.createElement('div');
   div.innerHTML = `
     <div style="
@@ -556,7 +570,7 @@ function createClusterMarkerContent(count: number) {
 /**
  * Creates an SVG string for cluster markers (fallback)
  */
-function createClusterMarkerSVG(count: number): string {
+function createClusterMarkerSVG(count) {
   return `
     <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
       <circle cx="20" cy="20" r="18" fill="#374151" stroke="white" stroke-width="2"/>
@@ -566,7 +580,7 @@ function createClusterMarkerSVG(count: number): string {
 }
 
 // Example usage with sample data
-export const sampleLocations: LocationData = {
+export const sampleLocations = {
   active: [
     {
       id: 'loc-001',
