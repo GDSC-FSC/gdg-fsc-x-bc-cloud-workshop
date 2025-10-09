@@ -153,6 +153,7 @@ alias lt='ls -lrth'  # Sort by time, human readable
 alias install='./scripts/install.sh'
 alias docker='./scripts/docker.sh'
 alias populate='./scripts/populate.sh'
+alias lint='./scripts/lint.sh'
 
 # Directory navigation
 alias ..='cd ..'
