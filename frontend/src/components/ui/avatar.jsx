@@ -3,20 +3,9 @@ import {
   AvatarGroup as ChakraAvatarGroup,
 } from "@chakra-ui/react"
 import * as React from "react"
+import PropTypes from "prop-types"
 
-type ImageProps = React.ImgHTMLAttributes<HTMLImageElement>
-
-export interface AvatarProps extends ChakraAvatar.RootProps {
-  name?: string
-  src?: string
-  srcSet?: string
-  loading?: ImageProps["loading"]
-  icon?: React.ReactElement
-  fallback?: React.ReactNode
-}
-
-export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
-  function Avatar(props, ref) {
+export const Avatar = React.forwardRef(function Avatar(props, ref) {
     const { name, src, srcSet, loading, icon, fallback, children, ...rest } =
       props
     return (
@@ -28,7 +17,16 @@ export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
         {children}
       </ChakraAvatar.Root>
     )
-  },
-)
+  })
+
+Avatar.propTypes = {
+  name: PropTypes.string,
+  src: PropTypes.string,
+  srcSet: PropTypes.string,
+  loading: PropTypes.oneOf(["eager", "lazy"]),
+  icon: PropTypes.element,
+  fallback: PropTypes.node,
+  children: PropTypes.node,
+}
 
 export const AvatarGroup = ChakraAvatarGroup

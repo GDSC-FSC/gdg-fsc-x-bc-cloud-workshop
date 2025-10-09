@@ -2,15 +2,10 @@
 
 import { AbsoluteCenter, Menu as ChakraMenu, Portal } from "@chakra-ui/react"
 import * as React from "react"
+import PropTypes from "prop-types"
 import { LuCheck, LuChevronRight } from "react-icons/lu"
 
-interface MenuContentProps extends ChakraMenu.ContentProps {
-  portalled?: boolean
-  portalRef?: React.RefObject<HTMLElement | null>
-}
-
-export const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
-  function MenuContent(props, ref) {
+export const MenuContent = React.forwardRef(function MenuContent(props, ref) {
     const { portalled = true, portalRef, ...rest } = props
     return (
       <Portal disabled={!portalled} container={portalRef}>
@@ -19,13 +14,18 @@ export const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
         </ChakraMenu.Positioner>
       </Portal>
     )
-  },
-)
+  })
 
-export const MenuArrow = React.forwardRef<
-  HTMLDivElement,
-  ChakraMenu.ArrowProps
->(function MenuArrow(props, ref) {
+MenuContent.propTypes = {
+  portalled: PropTypes.bool,
+  portalRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.any })
+  ]),
+  children: PropTypes.node,
+}
+
+export const MenuArrow = React.forwardRef(function MenuArrow(props, ref) {
   return (
     <ChakraMenu.Arrow ref={ref} {...props}>
       <ChakraMenu.ArrowTip />
@@ -33,10 +33,11 @@ export const MenuArrow = React.forwardRef<
   )
 })
 
-export const MenuCheckboxItem = React.forwardRef<
-  HTMLDivElement,
-  ChakraMenu.CheckboxItemProps
->(function MenuCheckboxItem(props, ref) {
+MenuArrow.propTypes = {
+  children: PropTypes.node,
+}
+
+export const MenuCheckboxItem = React.forwardRef(function MenuCheckboxItem(props, ref) {
   return (
     <ChakraMenu.CheckboxItem ps="8" ref={ref} {...props}>
       <AbsoluteCenter axis="horizontal" insetStart="4" asChild>
@@ -49,10 +50,11 @@ export const MenuCheckboxItem = React.forwardRef<
   )
 })
 
-export const MenuRadioItem = React.forwardRef<
-  HTMLDivElement,
-  ChakraMenu.RadioItemProps
->(function MenuRadioItem(props, ref) {
+MenuCheckboxItem.propTypes = {
+  children: PropTypes.node,
+}
+
+export const MenuRadioItem = React.forwardRef(function MenuRadioItem(props, ref) {
   const { children, ...rest } = props
   return (
     <ChakraMenu.RadioItem ps="8" ref={ref} {...rest}>
@@ -66,10 +68,11 @@ export const MenuRadioItem = React.forwardRef<
   )
 })
 
-export const MenuItemGroup = React.forwardRef<
-  HTMLDivElement,
-  ChakraMenu.ItemGroupProps
->(function MenuItemGroup(props, ref) {
+MenuRadioItem.propTypes = {
+  children: PropTypes.node,
+}
+
+export const MenuItemGroup = React.forwardRef(function MenuItemGroup(props, ref) {
   const { title, children, ...rest } = props
   return (
     <ChakraMenu.ItemGroup ref={ref} {...rest}>
@@ -83,14 +86,12 @@ export const MenuItemGroup = React.forwardRef<
   )
 })
 
-export interface MenuTriggerItemProps extends ChakraMenu.ItemProps {
-  startIcon?: React.ReactNode
+MenuItemGroup.propTypes = {
+  title: PropTypes.node,
+  children: PropTypes.node,
 }
 
-export const MenuTriggerItem = React.forwardRef<
-  HTMLDivElement,
-  MenuTriggerItemProps
->(function MenuTriggerItem(props, ref) {
+export const MenuTriggerItem = React.forwardRef(function MenuTriggerItem(props, ref) {
   const { startIcon, children, ...rest } = props
   return (
     <ChakraMenu.TriggerItem ref={ref} {...rest}>
@@ -100,6 +101,11 @@ export const MenuTriggerItem = React.forwardRef<
     </ChakraMenu.TriggerItem>
   )
 })
+
+MenuTriggerItem.propTypes = {
+  startIcon: PropTypes.node,
+  children: PropTypes.node,
+}
 
 export const MenuRadioItemGroup = ChakraMenu.RadioItemGroup
 export const MenuContextTrigger = ChakraMenu.ContextTrigger

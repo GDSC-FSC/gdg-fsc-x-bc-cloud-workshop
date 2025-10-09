@@ -1,22 +1,13 @@
 import {
   Popover as ChakraPopover,
   IconButton,
-  type IconButtonProps,
   Portal,
 } from "@chakra-ui/react"
 import * as React from "react"
+import PropTypes from "prop-types"
 import { HiOutlineInformationCircle } from "react-icons/hi"
 
-export interface ToggleTipProps extends ChakraPopover.RootProps {
-  showArrow?: boolean
-  portalled?: boolean
-  portalRef?: React.RefObject<HTMLElement | null>
-  content?: React.ReactNode
-  contentProps?: ChakraPopover.ContentProps
-}
-
-export const ToggleTip = React.forwardRef<HTMLDivElement, ToggleTipProps>(
-  function ToggleTip(props, ref) {
+export const ToggleTip = React.forwardRef(function ToggleTip(props, ref) {
     const {
       showArrow,
       children,
@@ -55,28 +46,38 @@ export const ToggleTip = React.forwardRef<HTMLDivElement, ToggleTipProps>(
         </Portal>
       </ChakraPopover.Root>
     )
-  },
-)
+  })
 
-export interface InfoTipProps extends Partial<ToggleTipProps> {
-  buttonProps?: IconButtonProps | undefined
+ToggleTip.propTypes = {
+  showArrow: PropTypes.bool,
+  portalled: PropTypes.bool,
+  portalRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.any })
+  ]),
+  content: PropTypes.node,
+  contentProps: PropTypes.object,
+  children: PropTypes.node,
 }
 
-export const InfoTip = React.forwardRef<HTMLDivElement, InfoTipProps>(
-  function InfoTip(props, ref) {
-    const { children, buttonProps, ...rest } = props
-    return (
-      <ToggleTip content={children} {...rest} ref={ref}>
-        <IconButton
-          variant="ghost"
-          aria-label="info"
-          size="2xs"
-          colorPalette="gray"
-          {...buttonProps}
-        >
-          <HiOutlineInformationCircle />
-        </IconButton>
-      </ToggleTip>
-    )
-  },
-)
+export const InfoTip = React.forwardRef(function InfoTip(props, ref) {
+  const { children, buttonProps, ...rest } = props
+  return (
+    <ToggleTip content={children} {...rest} ref={ref}>
+      <IconButton
+        variant="ghost"
+        aria-label="info"
+        size="2xs"
+        colorPalette="gray"
+        {...buttonProps}
+      >
+        <HiOutlineInformationCircle />
+      </IconButton>
+    </ToggleTip>
+  )
+})
+
+InfoTip.propTypes = {
+  children: PropTypes.node,
+  buttonProps: PropTypes.object,
+}

@@ -5,16 +5,9 @@ import {
   Spinner,
 } from "@chakra-ui/react"
 import * as React from "react"
+import PropTypes from "prop-types"
 
-interface ButtonLoadingProps {
-  loading?: boolean
-  loadingText?: React.ReactNode
-}
-
-export interface ButtonProps extends ChakraButtonProps, ButtonLoadingProps {}
-
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  function Button(props, ref) {
+export const Button = React.forwardRef(function Button(props, ref) {
     const { loading, disabled, loadingText, children, ...rest } = props
     return (
       <ChakraButton disabled={loading || disabled} ref={ref} {...rest}>
@@ -35,5 +28,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         )}
       </ChakraButton>
     )
-  },
-)
+  })
+
+Button.propTypes = {
+  loading: PropTypes.bool,
+  disabled: PropTypes.bool,
+  loadingText: PropTypes.node,
+  children: PropTypes.node,
+}

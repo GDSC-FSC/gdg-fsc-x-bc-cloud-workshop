@@ -1,17 +1,8 @@
 import { Tooltip as ChakraTooltip, Portal } from "@chakra-ui/react"
 import * as React from "react"
+import PropTypes from "prop-types"
 
-export interface TooltipProps extends ChakraTooltip.RootProps {
-  showArrow?: boolean
-  portalled?: boolean
-  portalRef?: React.RefObject<HTMLElement | null>
-  content: React.ReactNode
-  contentProps?: ChakraTooltip.ContentProps
-  disabled?: boolean
-}
-
-export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
-  function Tooltip(props, ref) {
+export const Tooltip = React.forwardRef(function Tooltip(props, ref) {
     const {
       showArrow,
       children,
@@ -42,5 +33,17 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
         </Portal>
       </ChakraTooltip.Root>
     )
-  },
-)
+  })
+
+Tooltip.propTypes = {
+  showArrow: PropTypes.bool,
+  portalled: PropTypes.bool,
+  portalRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.any })
+  ]),
+  content: PropTypes.node.isRequired,
+  contentProps: PropTypes.object,
+  disabled: PropTypes.bool,
+  children: PropTypes.node,
+}

@@ -3,15 +3,9 @@
 import { Select as ChakraSelect, Portal } from "@chakra-ui/react"
 import { CloseButton } from "./close-button"
 import * as React from "react"
+import PropTypes from "prop-types"
 
-interface SelectTriggerProps extends ChakraSelect.ControlProps {
-  clearable?: boolean
-}
-
-export const SelectTrigger = React.forwardRef<
-  HTMLButtonElement,
-  SelectTriggerProps
->(function SelectTrigger(props, ref) {
+export const SelectTrigger = React.forwardRef(function SelectTrigger(props, ref) {
   const { children, clearable, ...rest } = props
   return (
     <ChakraSelect.Control {...rest}>
@@ -24,10 +18,12 @@ export const SelectTrigger = React.forwardRef<
   )
 })
 
-const SelectClearTrigger = React.forwardRef<
-  HTMLButtonElement,
-  ChakraSelect.ClearTriggerProps
->(function SelectClearTrigger(props, ref) {
+SelectTrigger.propTypes = {
+  children: PropTypes.node,
+  clearable: PropTypes.bool,
+}
+
+const SelectClearTrigger = React.forwardRef(function SelectClearTrigger(props, ref) {
   return (
     <ChakraSelect.ClearTrigger asChild {...props} ref={ref}>
       <CloseButton
@@ -41,15 +37,11 @@ const SelectClearTrigger = React.forwardRef<
   )
 })
 
-interface SelectContentProps extends ChakraSelect.ContentProps {
-  portalled?: boolean
-  portalRef?: React.RefObject<HTMLElement | null>
+SelectClearTrigger.propTypes = {
+  children: PropTypes.node,
 }
 
-export const SelectContent = React.forwardRef<
-  HTMLDivElement,
-  SelectContentProps
->(function SelectContent(props, ref) {
+export const SelectContent = React.forwardRef(function SelectContent(props, ref) {
   const { portalled = true, portalRef, ...rest } = props
   return (
     <Portal disabled={!portalled} container={portalRef}>
@@ -60,10 +52,16 @@ export const SelectContent = React.forwardRef<
   )
 })
 
-export const SelectItem = React.forwardRef<
-  HTMLDivElement,
-  ChakraSelect.ItemProps
->(function SelectItem(props, ref) {
+SelectContent.propTypes = {
+  portalled: PropTypes.bool,
+  portalRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.any })
+  ]),
+  children: PropTypes.node,
+}
+
+export const SelectItem = React.forwardRef(function SelectItem(props, ref) {
   const { item, children, ...rest } = props
   return (
     <ChakraSelect.Item key={item.value} item={item} {...rest} ref={ref}>
@@ -73,15 +71,12 @@ export const SelectItem = React.forwardRef<
   )
 })
 
-interface SelectValueTextProps
-  extends Omit<ChakraSelect.ValueTextProps, "children"> {
-  children?(items: CollectionItem[]): React.ReactNode
+SelectItem.propTypes = {
+  item: PropTypes.object.isRequired,
+  children: PropTypes.node,
 }
 
-export const SelectValueText = React.forwardRef<
-  HTMLSpanElement,
-  SelectValueTextProps
->(function SelectValueText(props, ref) {
+export const SelectValueText = React.forwardRef(function SelectValueText(props, ref) {
   const { children, ...rest } = props
   return (
     <ChakraSelect.ValueText {...rest} ref={ref}>
@@ -99,10 +94,12 @@ export const SelectValueText = React.forwardRef<
   )
 })
 
-export const SelectRoot = React.forwardRef<
-  HTMLDivElement,
-  ChakraSelect.RootProps
->(function SelectRoot(props, ref) {
+SelectValueText.propTypes = {
+  children: PropTypes.func,
+  placeholder: PropTypes.string,
+}
+
+export const SelectRoot = React.forwardRef(function SelectRoot(props, ref) {
   return (
     <ChakraSelect.Root
       {...props}
@@ -119,16 +116,15 @@ export const SelectRoot = React.forwardRef<
       )}
     </ChakraSelect.Root>
   )
-}) as ChakraSelect.RootComponent
+})
 
-interface SelectItemGroupProps extends ChakraSelect.ItemGroupProps {
-  label: React.ReactNode
+SelectRoot.propTypes = {
+  children: PropTypes.node,
+  asChild: PropTypes.bool,
+  positioning: PropTypes.object,
 }
 
-export const SelectItemGroup = React.forwardRef<
-  HTMLDivElement,
-  SelectItemGroupProps
->(function SelectItemGroup(props, ref) {
+export const SelectItemGroup = React.forwardRef(function SelectItemGroup(props, ref) {
   const { children, label, ...rest } = props
   return (
     <ChakraSelect.ItemGroup {...rest} ref={ref}>
@@ -137,6 +133,11 @@ export const SelectItemGroup = React.forwardRef<
     </ChakraSelect.ItemGroup>
   )
 })
+
+SelectItemGroup.propTypes = {
+  label: PropTypes.node.isRequired,
+  children: PropTypes.node,
+}
 
 export const SelectLabel = ChakraSelect.Label
 export const SelectItemText = ChakraSelect.ItemText

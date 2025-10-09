@@ -1,15 +1,9 @@
 import { Accordion, HStack } from "@chakra-ui/react"
 import * as React from "react"
+import PropTypes from "prop-types"
 import { LuChevronDown } from "react-icons/lu"
 
-interface AccordionItemTriggerProps extends Accordion.ItemTriggerProps {
-  indicatorPlacement?: "start" | "end"
-}
-
-export const AccordionItemTrigger = React.forwardRef<
-  HTMLButtonElement,
-  AccordionItemTriggerProps
->(function AccordionItemTrigger(props, ref) {
+export const AccordionItemTrigger = React.forwardRef(function AccordionItemTrigger(props, ref) {
   const { children, indicatorPlacement = "end", ...rest } = props
   return (
     <Accordion.ItemTrigger {...rest} ref={ref}>
@@ -30,18 +24,22 @@ export const AccordionItemTrigger = React.forwardRef<
   )
 })
 
-interface AccordionItemContentProps extends Accordion.ItemContentProps {}
+AccordionItemTrigger.propTypes = {
+  children: PropTypes.node,
+  indicatorPlacement: PropTypes.oneOf(["start", "end"]),
+}
 
-export const AccordionItemContent = React.forwardRef<
-  HTMLDivElement,
-  AccordionItemContentProps
->(function AccordionItemContent(props, ref) {
+export const AccordionItemContent = React.forwardRef(function AccordionItemContent(props, ref) {
   return (
     <Accordion.ItemContent>
       <Accordion.ItemBody {...props} ref={ref} />
     </Accordion.ItemContent>
   )
 })
+
+AccordionItemContent.propTypes = {
+  children: PropTypes.node,
+}
 
 export const AccordionRoot = Accordion.Root
 export const AccordionItem = Accordion.Item

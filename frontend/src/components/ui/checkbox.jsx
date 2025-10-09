@@ -1,14 +1,8 @@
 import { Checkbox as ChakraCheckbox } from "@chakra-ui/react"
 import * as React from "react"
+import PropTypes from "prop-types"
 
-export interface CheckboxProps extends ChakraCheckbox.RootProps {
-  icon?: React.ReactNode
-  inputProps?: React.InputHTMLAttributes<HTMLInputElement>
-  rootRef?: React.RefObject<HTMLLabelElement | null>
-}
-
-export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
-  function Checkbox(props, ref) {
+export const Checkbox = React.forwardRef(function Checkbox(props, ref) {
     const { icon, children, inputProps, rootRef, ...rest } = props
     return (
       <ChakraCheckbox.Root ref={rootRef} {...rest}>
@@ -21,5 +15,14 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
         )}
       </ChakraCheckbox.Root>
     )
-  },
-)
+  })
+
+Checkbox.propTypes = {
+  icon: PropTypes.node,
+  inputProps: PropTypes.object,
+  rootRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.any })
+  ]),
+  children: PropTypes.node,
+}
