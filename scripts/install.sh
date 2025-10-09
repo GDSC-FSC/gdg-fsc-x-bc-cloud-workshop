@@ -197,30 +197,13 @@ if ! command_exists bun; then
     fi
 fi
 
-# Check for port conflicts
-if lsof -i :3000 >/dev/null 2>&1; then
-    log_error "Port 3000 is already in use. Please free it before running the container."
-    exit 1
-fi
-
-# Check if container exists
-if docker ps -a --format '{{.Names}}' | grep -q '^<>$'; then
-    log_warn "Container '<>' already exists. Removing it..."
-    docker rm -f <>
-fi
-
-# Pull image if not present
-if ! docker image inspect node:24-alpine >/dev/null 2>&1; then
-    log_info "Pulling node:24-alpine image..."
-    docker pull node:24-alpine
-fi
-
-# Run the container
-log_info "Starting development server in Docker..."
-docker run -d --name <> -p 3000:3000 -v "$(pwd)":/app -w /app node:24-alpine bun run dev
-if [ $? -eq 0 ]; then
-    log_success "Container '<>' started on port 3000."
-else
-    log_error "Failed to start the container."
-    exit 1
-fi
+log_info "✅ All dependencies are installed and ready!"
+log_info ""
+log_info "Next steps:"
+log_info "  1. './scripts/dev.sh'       - Start full dev environment"
+log_info "  2. './scripts/db-setup.sh'  - Setup database"
+log_info "  3. './scripts/db-seed.sh'   - Populate database"
+log_info "  4. './scripts/test-api.sh'  - Test API endpoints"
+log_info "  5. './scripts/frontend.sh'  - Manage frontend"
+log_info ""
+log_success "Installation complete!"

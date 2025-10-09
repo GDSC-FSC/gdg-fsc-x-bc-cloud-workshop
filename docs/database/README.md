@@ -21,7 +21,7 @@ The loader script creates `public.nyc_restaurant_inspections`:
 ## Load the data
 Run from the project root:
 ```bash
-sudo bash populate.sh
+./scripts/db-seed.sh
 ````
 
 What it does:

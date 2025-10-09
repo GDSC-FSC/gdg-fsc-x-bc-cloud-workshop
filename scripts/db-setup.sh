@@ -12,8 +12,8 @@ DB_NAME="${DB_NAME:-postgres}"
 DB_PORT="${DB_PORT:-5432}"
 POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-brooklyn}"
 
-# Path to your loader script (repo root by default)
-POPULATE_SCRIPT="${POPULATE_SCRIPT:-./populate.sh}"
+# Path to your loader script
+POPULATE_SCRIPT="${POPULATE_SCRIPT:-./scripts/db-seed.sh}"
 
 # --- Helpers ---
 log() { printf "\n\033[1;32m▶ %s\033[0m\n" "$*"; }

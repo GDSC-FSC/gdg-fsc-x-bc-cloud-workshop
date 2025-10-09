@@ -2,10 +2,29 @@
 
 A Spring Boot REST API for querying NYC restaurant health inspection data from a PostgreSQL database.
 
+## Quick Start
+
+```bash
+# Build
+cd api
+./gradlew clean build
+
+# Run
+./gradlew bootRun
+# OR
+java -jar build/libs/api-0.0.1-SNAPSHOT.jar
+
+# Test
+cd ..
+./scripts/test-api.sh
+```
+
+API runs on `http://localhost:8080`
+
 ## Prerequisites
 
 - Java 21+
-- PostgreSQL database running (see `scripts/docker.sh` to set up)
+- PostgreSQL database running (see `scripts/db-setup.sh` to set up)
 - Gradle (included via wrapper)
 
 ## Database Setup
@@ -22,8 +41,7 @@ To set up the database with Docker:
 
 ```bash
 # From the project root
-cd scripts
-./docker.sh
+./scripts/db-setup.sh
 ```
 
 This will:
@@ -31,29 +49,17 @@ This will:
 2. Start PostgreSQL container
 3. Load NYC restaurant inspection data
 
-## Building the API
+## Security Features
 
-```bash
-cd api
-./gradlew clean build
-```
-
-## Running the API
-
-### Option 1: Using Gradle
-```bash
-cd api
-./gradlew bootRun
-```
-
-### Option 2: Using the JAR
-```bash
-cd api
-./gradlew build
-java -jar build/libs/api-0.0.1-SNAPSHOT.jar
-```
-
-The API will start on `http://localhost:8080`
+- ✅ Input validation and sanitization
+- ✅ Rate limiting (100 req/min per IP)
+- ✅ SQL injection prevention
+- ✅ XSS protection
+- ✅ Security headers (CSP, X-Frame-Options, etc.)
+- ✅ CORS configuration
+- ✅ Optional API key authentication
+- ✅ Comprehensive error handling
+- ✅ Request/response logging
 
 ## API Endpoints
 
@@ -123,8 +129,7 @@ GET /api/restaurants/cuisines
 A test script is provided:
 
 ```bash
-cd api
-./test-api.sh
+./scripts/test-api.sh
 ```
 
 Or test individual endpoints:
@@ -157,54 +162,86 @@ server.port=8080
 ## Project Structure
 
 ```
-api/
-├── src/
-│   ├── main/
-│   │   ├── java/com/example/api/
-│   │   │   ├── ApiApplication.java           # Main application
-│   │   │   ├── config/
-│   │   │   │   ├── ApplicationConfiguration.java
-│   │   │   │   └── SecurityConfiguration.java
-│   │   │   ├── controller/
-│   │   │   │   └── RestaurantController.java # REST endpoints
-│   │   │   ├── dtos/
-│   │   │   │   ├── SearchRequest.java
-│   │   │   │   ├── RestaurantDetailsRequest.java
-│   │   │   │   └── RestaurantDTO.java
-│   │   │   ├── entities/
-│   │   │   │   └── RestaurantInspection.java # JPA entity
-│   │   │   ├── repository/
-│   │   │   │   └── RestaurantInspectionRepository.java
-│   │   │   ├── responses/
-│   │   │   │   ├── SearchResponse.java
-│   │   │   │   └── RestaurantDetailsResponse.java
-│   │   │   └── service/
-│   │   │       └── RestaurantInspectionService.java
-│   │   └── resources/
-│   │       └── application.properties
-│   └── test/
-├── build.gradle
-└── test-api.sh                               # API test script
+api/src/main/java/com/example/api/
+├── ApiApplication.java      # Main application
+├── config/                  # Configuration classes
+│   ├── ApplicationConfiguration.java
+│   ├── RateLimitingConfiguration.java
+│   └── SecurityConfiguration.java
+├── controller/              # REST endpoints
+│   └── RestaurantController.java
+├── dtos/                    # Request/response objects
+│   ├── SearchRequest.java
+│   ├── RestaurantDetailsRequest.java
+│   └── RestaurantDTO.java
+├── entities/                # JPA entities
+│   └── RestaurantInspection.java
+├── implementations/         # Service implementations
+│   └── RestaurantInspectionServiceImpl.java
+├── model/                   # Enums and models
+│   ├── Borough.java
+│   ├── Grade.java
+│   ├── InspectionType.java
+│   └── CriticalFlag.java
+├── repository/              # Data access
+│   └── RestaurantInspectionRepository.java
+├── responses/               # Response DTOs
+│   ├── SearchResponse.java
+│   └── RestaurantDetailsResponse.java
+├── service/                 # Business logic interfaces
+│   └── IRestaurantInspectionService.java
+├── util/                    # Utility classes
+│   └── InputSanitizer.java
+└── web/                     # Filters and error handlers
+    ├── RequestLoggingFilter.java
+    ├── ErrorResponse.java
+    ├── GlobalRestExceptionHandler.java
+    └── WebConfiguration.java
 ```
+
+**For detailed package structure, see:** [Package Structure](PACKAGE_STRUCTURE.md)
 
 ## Technologies Used
 
 - **Spring Boot 3.5.6**: Web framework
 - **Spring Data JPA**: Data access layer
+- **Spring Security**: Authentication & authorization
 - **PostgreSQL**: Database
 - **Hibernate**: ORM
+- **Bucket4j**: Rate limiting
 - **Lombok**: Reduce boilerplate code
 - **Jackson**: JSON serialization
-- **Spring Security**: CORS configuration
+- **Gradle**: Build tool
 
-## CORS Configuration
+## Additional Documentation
 
-The API is configured to accept requests from:
-- http://localhost:8005
-- http://localhost:5173
-- Any origin (for development)
+- **[Security Guide](SECURITY.md)** - Complete security features and configuration
+- **[Security Quick Reference](SECURITY_QUICK_REFERENCE.md)** - Quick setup guide
+- **[Package Structure](PACKAGE_STRUCTURE.md)** - Detailed code organization
+- **[Additional Components](ADDITIONAL_COMPONENTS.md)** - Enums, models, and utilities
 
-To modify CORS settings, edit `SecurityConfiguration.java`.
+## Development
+
+### Build
+```bash
+cd api
+./gradlew clean build
+```
+
+### Run Tests
+```bash
+./gradlew test
+```
+
+### Run Application
+```bash
+./gradlew bootRun
+```
+
+### Check Dependencies
+```bash
+./gradlew dependencies
+```
 
 ## Troubleshooting
 
@@ -239,6 +276,15 @@ Clean and rebuild:
 ./gradlew clean build --refresh-dependencies
 ```
 
+## CORS Configuration
+
+The API is configured to accept requests from:
+- http://localhost:3000 (Frontend)
+- http://localhost:5173 (Vite dev server)
+- Any origin (for development)
+
+To modify CORS settings, edit `SecurityConfiguration.java` or see [Security Guide](SECURITY.md).
+
 ## License
 
-MIT
+MIT License - See project root for details.

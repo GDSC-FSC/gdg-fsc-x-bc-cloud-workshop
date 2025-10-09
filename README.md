@@ -70,7 +70,7 @@ The **NYC Restaurant Safety Finder** is a comprehensive web application that pro
 
 ### Data Flow
 
-1. **Data Loading**: `scripts/populate.sh` loads NYC data into PostgreSQL
+1. **Data Loading**: `scripts/db-seed.sh` loads NYC data into PostgreSQL
 2. **API Layer**: Spring Boot exposes secure REST endpoints
 3. **Frontend**: React app queries API and displays results
 4. **Security**: Multiple layers protect against common vulnerabilities
@@ -120,8 +120,7 @@ The **NYC Restaurant Safety Finder** is a comprehensive web application that pro
 
 ```bash
 # Start PostgreSQL and load data
-cd scripts
-./docker.sh
+./scripts/db-setup.sh
 ```
 
 This will:
@@ -195,9 +194,16 @@ gdg-fsc-x-bc-cloud-workshop/
 │   │   └── lib/                  # Utilities
 │   └── package.json
 │
-├── scripts/                      # Setup scripts
-│   ├── docker.sh                 # PostgreSQL setup
-│   └── populate.sh               # Data loader
+├── scripts/                      # Utility scripts
+│   ├── dev.sh                    # Start dev environment
+│   ├── build.sh                  # Build all
+│   ├── clean.sh                  # Clean all
+│   ├── format.sh                 # Format code
+│   ├── db-setup.sh               # Setup database
+│   ├── db-seed.sh                # Seed database
+│   ├── frontend.sh               # Manage frontend
+│   ├── test-api.sh               # Test API
+│   └── install.sh                # Install dependencies
 │
 └── docs/                         # Documentation
     ├── README.md                 # Documentation index
@@ -210,7 +216,11 @@ gdg-fsc-x-bc-cloud-workshop/
     │   └── ADDITIONAL_COMPONENTS.md
     ├── database/                 # Database documentation
     │   └── README.md
-    └── docker/                   # Docker documentation
+    ├── docker/                   # Docker documentation
+    │   └── README.md
+    ├── frontend/                 # Frontend documentation
+    │   └── DOCKER_SETUP.md
+    └── scripts/                  # Scripts documentation
         └── README.md
 ```
 
@@ -347,14 +357,11 @@ This is a workshop project demonstrating cloud-native application development. C
 git clone https://github.com/GDSC-FSC/gdg-fsc-x-bc-cloud-workshop.git
 cd gdg-fsc-x-bc-cloud-workshop
 
-# Set up database
-cd scripts && ./docker.sh && cd ..
+# Install dependencies
+./scripts/install.sh
 
-# Build and run API
-cd api && ./gradlew bootRun &
-
-# Start frontend
-cd ../frontend && npm install && npm run dev
+# Start development environment
+./scripts/dev.sh
 ```
 
 ---
@@ -403,4 +410,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-Made with ❤️ by GDSC FSC x BC Cloud Workshop
+Made with ❤️ by GDG on Campus FSC x BC Cloud Workshop

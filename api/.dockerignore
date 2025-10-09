@@ -1,0 +1,47 @@
+# Gradle build files
+.gradle/
+build/
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+
+# IDE files
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.DS_Store
+
+# Compiled classes
+*.class
+bin/
+
+# Test files
+.classpath
+.project
+.settings/
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.swp
+*.bak
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+HELP.md
+ADDITIONAL_COMPONENTS.md
+*.md
+
+# Test scripts
+test-*.sh

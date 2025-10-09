@@ -1,35 +1,67 @@
-# NYC Restaurants API
+# NYC Restaurants API# NYC Restaurants API
 
-Spring Boot REST API for querying NYC restaurant health inspection data.
 
-## Quick Start
 
-```bash
-# Build
-./gradlew clean build
+> **📚 Full documentation is available at [`docs/api/README.md`](../docs/api/README.md)**Spring Boot REST API for querying NYC restaurant health inspection data.
 
-# Run
-java -jar build/libs/api-0.0.1-SNAPSHOT.jar
 
-# Test
-./test-api.sh
+
+## Quick Start## Quick Start
+
+
+
+```bash```bash
+
+# Build# Build
+
+./gradlew clean build./gradlew clean build
+
+
+
+# Run# Run
+
+./gradlew bootRunjava -jar build/libs/api-0.0.1-SNAPSHOT.jar
+
+
+
+# Test# Test
+
+cd .../test-api.sh
+
+./scripts/test-api.sh```
+
 ```
+
+API runs on `http://localhost:8080`
 
 API runs on `http://localhost:8080`
 
 ## API Endpoints
 
+## Documentation
+
 ### Restaurant Queries
-- `POST /api/restaurants/query` - Search restaurants
-- `POST /api/restaurants/details` - Get restaurant details
-- `GET /api/restaurants/boroughs` - List all boroughs
-- `GET /api/restaurants/cuisines` - List all cuisines
+
+- **[Complete API Guide](../docs/api/README.md)** - Full documentation- `POST /api/restaurants/query` - Search restaurants
+
+- **[Security Guide](../docs/api/SECURITY.md)** - Security features- `POST /api/restaurants/details` - Get restaurant details
+
+- **[Package Structure](../docs/api/PACKAGE_STRUCTURE.md)** - Code organization- `GET /api/restaurants/boroughs` - List all boroughs
+
+- **[Quick Reference](../docs/api/SECURITY_QUICK_REFERENCE.md)** - Quick setup- `GET /api/restaurants/cuisines` - List all cuisines
+
 - `GET /api/restaurants/health` - Health check
+
+## Configuration
 
 ### Example Request
 
+Edit `src/main/resources/application.properties` for database and server settings.
+
 ```bash
-curl -X POST http://localhost:8080/api/restaurants/query \
+
+See full docs for more details: [`docs/api/`](../docs/api/)curl -X POST http://localhost:8080/api/restaurants/query \
+
   -H "Content-Type: application/json" \
   -d '{
     "borough": "MANHATTAN",

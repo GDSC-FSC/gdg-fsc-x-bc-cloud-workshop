@@ -7,6 +7,16 @@
   - Key features
   - Getting started
 
+## Development Tools
+
+### Scripts
+- [Scripts Guide](scripts/README.md)
+  - Development scripts (dev, build, clean)
+  - Database scripts (setup, seed)
+  - Frontend management
+  - Testing utilities
+  - Installation guide
+
 ## Infrastructure
 
 ### Database
@@ -22,6 +32,7 @@
   - Creating networks and volumes
   - Troubleshooting tips
   - Container management
+  - Docker Compose usage
 
 ## Backend API
 
@@ -66,7 +77,16 @@
   - Production checklist
 
 ## Frontend
-- Frontend Setup (see `../frontend/README.md` in project root)
+
+### Setup & Configuration
+- [Docker Setup Guide](frontend/DOCKER_SETUP.md)
+  - Multi-stage Docker build
+  - Production server setup
+  - Environment configuration
+  - Management scripts
+  - Troubleshooting
+
+- Frontend Development (see `../frontend/README.md` in project root)
   - React + Vite configuration
   - Component structure
   - API integration
@@ -75,9 +95,11 @@
 ## Development
 
 ### Getting Started
-1. [Database Setup](database/README.md) - Set up PostgreSQL
-2. [API Setup](api/README.md) - Build and run the API
-3. [Frontend Setup](../frontend/README.md) - Start the web interface
+1. [Install Dependencies](scripts/README.md#-quick-start) - Install Docker, Bun, etc.
+2. [Start Development Environment](scripts/README.md#development) - Run dev.sh
+3. [Database Setup](database/README.md) - Set up PostgreSQL
+4. [API Setup](api/README.md) - Build and run the API
+5. [Frontend Setup](../frontend/README.md) - Start the web interface
 
 ### Testing
 - [API Testing](api/README.md#testing-the-api) - Test scripts and examples

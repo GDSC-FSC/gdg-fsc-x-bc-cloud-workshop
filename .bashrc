@@ -149,11 +149,16 @@ alias la='ls -A'
 alias l='ls -CF'
 alias lt='ls -lrth'  # Sort by time, human readable
 
-# project scripts
+# Project scripts
+alias dev='./scripts/dev.sh'
+alias build='./scripts/build.sh'
+alias clean='./scripts/clean.sh'
+alias format='./scripts/format.sh'
+alias db-setup='./scripts/db-setup.sh'
+alias db-seed='./scripts/db-seed.sh'
+alias frontend='./scripts/frontend.sh'
+alias test-api='./scripts/test-api.sh'
 alias install='./scripts/install.sh'
-alias docker='./scripts/docker.sh'
-alias populate='./scripts/populate.sh'
-alias lint='./scripts/lint.sh'
 
 # Directory navigation
 alias ..='cd ..'
