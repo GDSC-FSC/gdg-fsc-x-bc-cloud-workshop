@@ -896,13 +896,13 @@ This project is actively maintained. Here are some recent updates:
 <details>
 <summary>View Recent Changes</summary>
 
-*   **v1.1.0 - 2023-10-27**
+*   **v1.1.0 - 2025-10-9**
     *   Implemented Docker Compose for unified multi-service setup.
     *   Enhanced API security with configurable API Key authentication.
     *   Improved rate limiting configuration.
     *   Added detailed `scripts/` for streamlined development workflows.
     *   Updated `README.md` with comprehensive documentation and quick start guides.
-*   **v1.0.0 - 2023-09-15**
+*   **v1.0.0 - 2025-10-7**
     *   Initial release of the NYC Restaurant Safety Finder.
     *   Core Spring Boot API with CRUD for restaurant inspections.
     *   Basic React frontend for search and display.
