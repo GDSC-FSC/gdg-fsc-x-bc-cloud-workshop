@@ -1,5 +1,13 @@
 # Table of Contents
 
+## Getting Started
+- [🚀 Quick Start Guide](QUICK_START.md) **← Start Here!**
+  - 5-minute setup
+  - Three ways to run commands (npm, bash, aliases)
+  - Development workflow
+  - Common commands reference
+  - Troubleshooting tips
+
 ## Overview
 - [Project Introduction](README.md)
   - Architecture overview

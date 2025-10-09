@@ -1,12 +1,55 @@
 {
   "name": "gdg-fsc-x-bc-cloud-workshop",
+  "version": "1.0.0",
+  "description": "GDG FSC x BC Cloud Workshop - NYC Restaurants API",
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "dev": "bash scripts/dev.sh",
+    "build": "bash scripts/build.sh",
+    "build:api": "cd api && ./gradlew clean build",
+    "build:frontend": "cd frontend && bun install && bun run build",
+    "clean": "bash scripts/clean.sh",
+    "format": "bash scripts/format.sh",
+    "db:setup": "bash scripts/db-setup.sh",
+    "db:seed": "bash scripts/db-seed.sh",
+    "frontend": "bash scripts/frontend.sh",
+    "frontend:dev": "cd frontend && bun run dev",
+    "frontend:build": "cd frontend && bun run build",
+    "api:dev": "cd api && ./gradlew bootRun",
+    "api:test": "cd api && ./gradlew test",
+    "test:api": "bash scripts/test-api.sh",
+    "install:all": "bash scripts/install.sh",
+    "start:all": "concurrently -n \"api,frontend\" -c \"blue,green\" \"npm run api:dev\" \"npm run frontend:dev\"",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:restart": "docker-compose restart"
+  },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "concurrently": "^9.2.1"
   },
   "peerDependencies": {
     "typescript": "^5"
-  }
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "bun": ">=1.0.0"
+  },
+  "keywords": [
+    "spring-boot",
+    "react",
+    "vite",
+    "postgresql",
+    "docker",
+    "rest-api",
+    "nyc-open-data"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GDSC-FSC/gdg-fsc-x-bc-cloud-workshop.git"
+  },
+  "license": "MIT"
 }

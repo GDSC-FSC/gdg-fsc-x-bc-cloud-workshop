@@ -2,6 +2,10 @@
 
 Welcome to the documentation for the GDG FSC x BC Cloud Workshop project. This guide provides an overview of the project, its architecture, and instructions for setup and usage.
 
+## 🚀 New Here?
+
+**Start with the [Quick Start Guide](QUICK_START.md)** - Get running in 5 minutes!
+
 ## Project Overview
 
 This workshop demonstrates a full-stack cloud application using Docker, PostgreSQL, Spring Boot, and modern frontend technologies. The project showcases a complete production-ready REST API with comprehensive security features for querying NYC restaurant inspection data.
@@ -43,6 +47,9 @@ This workshop demonstrates a full-stack cloud application using Docker, PostgreS
 ### Component-Specific Guides
 
 - **Scripts & Utilities:** [Scripts Guide](scripts/README.md)
+  - Bash scripts, npm scripts, and bash aliases
+  - Three ways to run every command
+  - Concurrent development with `npm run start:all`
 - **Database & Data Loading:** [Database Guide](database/README.md)
 - **Docker Configuration:** [Docker Setup](docker/README.md)
 - **Frontend Development:** [Frontend Guide](frontend/README.md)

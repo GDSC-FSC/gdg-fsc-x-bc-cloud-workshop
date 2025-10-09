@@ -166,6 +166,39 @@ curl -X POST http://localhost:8080/api/restaurants/query \
   -d '{"borough": "MANHATTAN", "cuisine": "Pizza", "limit": 10}'
 ```
 
+### Alternative: Using npm Scripts
+
+You can also use the convenient npm scripts for common tasks:
+
+```bash
+# Development
+npm run dev              # Start full dev environment
+npm start:all           # Run API + Frontend concurrently
+
+# Building
+npm run build           # Build all components
+npm run build:api       # Build API only
+npm run build:frontend  # Build frontend only
+
+# Database
+npm run db:setup        # Setup PostgreSQL in Docker
+npm run db:seed         # Load NYC restaurant data
+
+# Docker Management
+npm run docker:up       # Start all Docker containers
+npm run docker:down     # Stop all Docker containers
+npm run docker:logs     # View Docker logs
+npm run docker:restart  # Restart Docker containers
+
+# Testing & Formatting
+npm run test:api        # Test all API endpoints
+npm run format          # Format Java and JavaScript code
+
+# Utilities
+npm run clean           # Remove build artifacts
+npm run install:all     # Install all dependencies
+```
+
 ---
 
 ## 📁 Project Structure
@@ -227,6 +260,9 @@ gdg-fsc-x-bc-cloud-workshop/
 ---
 
 ## 📚 Documentation
+
+### Getting Started
+- **[🚀 Quick Start Guide](docs/QUICK_START.md)** - Get up and running in 5 minutes!
 
 ### Core Documentation
 - **[Documentation Index](docs/README.md)** - Complete documentation overview
