@@ -90,7 +90,7 @@ public class RestaurantInspectionService {
         .inspectionDate(entity.getInspectionDate())
         .action(entity.getAction())
         .violationCode(entity.getViolationCode())
-        .violationDescription(entity.getViolationDescription())
+        // .violationDescription(entity.getViolationDescription()) // excluded due to bytea compatibility issue
         .criticalFlag(entity.getCriticalFlag())
         .score(entity.getScore())
         .grade(entity.getGrade())

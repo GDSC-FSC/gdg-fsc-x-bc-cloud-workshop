@@ -1,4 +1,4 @@
-import { Card as ChakraCard } from "@chakra-ui/react"
+import { Card as ChakraCard, Box } from "@chakra-ui/react"
 import * as React from "react"
 import PropTypes from "prop-types"
 
@@ -6,13 +6,13 @@ export const Card = React.forwardRef(function Card(props, ref) {
   const { children, className, ...rest } = props
   
   return (
-    <ChakraCard 
+    <ChakraCard.Root 
       ref={ref} 
       className={className}
       {...rest}
     >
       {children}
-    </ChakraCard>
+    </ChakraCard.Root>
   )
 })
 

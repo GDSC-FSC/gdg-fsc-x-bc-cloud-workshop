@@ -28,20 +28,25 @@ public interface RestaurantInspectionRepository
    * @return list of matching restaurants
    */
   @Query(
-      "SELECT DISTINCT r FROM RestaurantInspection r WHERE (:borough IS NULL OR UPPER(r.boro) ="
-          + " UPPER(:borough)) AND (:cuisine IS NULL OR UPPER(r.cuisineDescription) LIKE"
-          + " UPPER(CONCAT('%', :cuisine, '%'))) AND (:minGrade IS NULL OR r.grade IS NULL OR"
-          + " r.grade <= :minGrade) ORDER BY r.dba, r.inspectionDate DESC")
+      value =
+          "SELECT * FROM nyc_restaurant_inspections r WHERE "
+              + "(CAST(:borough AS text) IS NULL OR r.boro = CAST(:borough AS text)) "
+              + "AND (CAST(:cuisine AS text) IS NULL OR r.cuisine_description LIKE CONCAT('%', CAST(:cuisine AS text), '%')) "
+              + "AND (CAST(:minGrade AS text) IS NULL OR r.grade IS NULL OR r.grade <= CAST(:minGrade AS text)) "
+              + "ORDER BY r.dba, r.inspection_date DESC",
+      nativeQuery = true)
   List<RestaurantInspection> searchRestaurants(
       @Param("borough") String borough,
       @Param("cuisine") String cuisine,
       @Param("minGrade") String minGrade);
 
   @Query(
-      "SELECT r FROM RestaurantInspection r WHERE "
-          + "UPPER(r.dba) = UPPER(:restaurantName) AND "
-          + "(:borough IS NULL OR UPPER(r.boro) = UPPER(:borough)) "
-          + "ORDER BY r.inspectionDate DESC")
+      value =
+          "SELECT * FROM nyc_restaurant_inspections r WHERE "
+              + "r.dba = CAST(:restaurantName AS text) AND "
+              + "(CAST(:borough AS text) IS NULL OR r.boro = CAST(:borough AS text)) "
+              + "ORDER BY r.inspection_date DESC",
+      nativeQuery = true)
   List<RestaurantInspection> findByRestaurantNameAndBorough(
       @Param("restaurantName") String restaurantName, @Param("borough") String borough);
 

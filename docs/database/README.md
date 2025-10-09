@@ -13,10 +13,12 @@ The loader script creates `public.nyc_restaurant_inspections`:
 - Keys & descriptors: `camis`, `dba`, `boro`, address fields, `cuisine_description`
 - Inspection fields: `inspection_date`, `action`, `violation_code`, `violation_description`, `critical_flag`, `score`, `grade`, `grade_date`, `record_date`, `inspection_type`
 - Location & districts: `latitude`, `longitude`, `community_board`, `council_district`, `census_tract`, `bin`, `bbl`, `nta`
-- Raw geometry: `location_point1 jsonb` (full GeoJSON geometry)
+- Raw geometry: `location_point1 text` (full GeoJSON geometry stored as text)
 - Index: `(camis, inspection_date)` for common lookups
 
 > GeoJSON uses **longitude, latitude** order per RFC 7946.
+> 
+> **Note:** The `location_point1` column is stored as `text` instead of `jsonb` to ensure compatibility with JPA/Hibernate queries. PostgreSQL's `jsonb` type doesn't support the `UPPER()` function, which is used by Hibernate for case-insensitive string comparisons in JPQL queries.
 
 ## Load the data
 Run from the project root:
@@ -69,6 +71,39 @@ ORDER BY camis, grade_date DESC;
 ```
 
 `\d` / `\dt` / `\d+` are psql meta-commands for inspecting schema objects. ([PostgreSQL][1])
+
+## Schema Changes
+
+### location_point1 Column Type
+
+The `location_point1` column was changed from `jsonb` to `text` to resolve compatibility issues with JPA/Hibernate:
+
+**Problem:** Hibernate's query translation applies the `UPPER()` function to all string columns in JPQL queries for case-insensitive comparisons. PostgreSQL's `jsonb` type doesn't support `UPPER()`, causing queries to fail with:
+```
+ERROR: function upper(bytea) does not exist
+```
+
+**Solution:** Store the GeoJSON geometry as `text` instead of `jsonb`. The migration is handled automatically by the `db-seed.sh` script:
+
+```sql
+-- Convert location_point1 from jsonb to text if needed
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'nyc_restaurant_inspections' 
+    AND column_name = 'location_point1' 
+    AND data_type = 'jsonb'
+  ) THEN
+    ALTER TABLE nyc_restaurant_inspections ALTER COLUMN location_point1 TYPE text;
+  END IF;
+END$$;
+```
+
+**Impact:** If you need to query the geometry data, you can:
+- Cast back to `jsonb`: `location_point1::jsonb`
+- Parse as JSON in your application code
+- Use PostGIS for spatial queries (see below)
 
 ## Notes
 

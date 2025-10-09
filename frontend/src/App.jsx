@@ -34,7 +34,7 @@ function App() {
     setNotification(null);
     try {
       const response = await restaurantApi.searchRestaurants(searchParams);
-      setResults(response.results || []);
+      setResults(response.restaurants || []);
       setNotification({
         type: 'success',
         message: `Found ${response.count || 0} restaurant${response.count !== 1 ? 's' : ''}`

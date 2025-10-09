@@ -37,10 +37,23 @@ CREATE TABLE IF NOT EXISTS nyc_restaurant_inspections (
   bin                 text,
   bbl                 text,
   nta                 text,
-  location_point1     jsonb
+  location_point1     text
 );
 CREATE INDEX IF NOT EXISTS nyc_rest_inspections_cam_ins_date_idx
   ON nyc_restaurant_inspections (camis, inspection_date);
+
+-- Convert location_point1 from jsonb to text if it exists as jsonb
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'nyc_restaurant_inspections' 
+    AND column_name = 'location_point1' 
+    AND data_type = 'jsonb'
+  ) THEN
+    ALTER TABLE nyc_restaurant_inspections ALTER COLUMN location_point1 TYPE text;
+  END IF;
+END$$;
 SQL
 
 TMP_CSV="$(mktemp)"; trap 'rm -f "$TMP_CSV"' EXIT

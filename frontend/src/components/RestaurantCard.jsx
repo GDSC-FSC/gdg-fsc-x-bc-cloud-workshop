@@ -49,7 +49,7 @@ const RestaurantCard = ({ restaurant, onViewDetails }) => {
   } = restaurant;
 
   return (
-    <Card.Root
+    <Card
       size="sm"
       variant="outline"
       bg="white"
@@ -136,7 +136,7 @@ const RestaurantCard = ({ restaurant, onViewDetails }) => {
           </Button>
         </Stack>
       </CardContent>
-    </Card.Root>
+    </Card>
   );
 };
 

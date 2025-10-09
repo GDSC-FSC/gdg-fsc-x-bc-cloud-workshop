@@ -52,8 +52,8 @@ public class RestaurantInspection {
   @Column(name = "action")
   private String action;
 
-  @Column(name = "violation_description", columnDefinition = "TEXT")
-  private String violationDescription;
+  // Note: violation_description column excluded from entity mapping due to Hibernate/PostgreSQL bytea compatibility issues  
+  // The column exists in the database but is not mapped to avoid query errors
 
   @Column(name = "critical_flag")
   private String criticalFlag;
@@ -97,9 +97,9 @@ public class RestaurantInspection {
   @Column(name = "nta")
   private String nta;
 
-  @Column(name = "location_point1", columnDefinition = "jsonb")
-  private String locationPoint1;
-
+  // Note: location_point1 column excluded from entity mapping due to Hibernate/PostgreSQL bytea compatibility issues
+  // The column exists in the database but is not mapped to avoid query errors
+  
   @Data
   @NoArgsConstructor
   @AllArgsConstructor

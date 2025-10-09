@@ -42,7 +42,11 @@ public class RestaurantInspectionServiceImpl implements IRestaurantInspectionSer
     // Apply limit
     int limit = request.getLimit() != null ? request.getLimit() : 100;
     List<RestaurantDTO> limitedResults =
-        results.stream().limit(limit).map(this::mapToDTO).collect(Collectors.toList());
+        results.stream()
+            .filter(entity -> entity != null)
+            .limit(limit)
+            .map(this::mapToDTO)
+            .collect(Collectors.toList());
 
     return SearchResponse.builder()
         .restaurants(limitedResults)
@@ -107,7 +111,7 @@ public class RestaurantInspectionServiceImpl implements IRestaurantInspectionSer
         .inspectionDate(entity.getInspectionDate())
         .action(entity.getAction())
         .violationCode(entity.getViolationCode())
-        .violationDescription(entity.getViolationDescription())
+        // .violationDescription(entity.getViolationDescription()) // excluded due to bytea compatibility issue
         .criticalFlag(entity.getCriticalFlag())
         .score(entity.getScore())
         .grade(entity.getGrade())
