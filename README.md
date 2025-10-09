@@ -177,37 +177,44 @@ The application follows a standard multi-tier architecture, designed for clarity
 This diagram illustrates the main components and their interactions within the NYC Restaurant Safety Finder application.
 
 ```mermaid
-graph TD
-    subgraph Client
-        A[User Browser/Mobile] -- HTTP/REST --> B(Frontend: React/Vite)
+flowchart TD
+    %% Client
+    subgraph client[Client]
+        A[User Browser/Mobile] -->|HTTP/REST| B(Frontend: React/Vite)
     end
 
-    subgraph Backend Services
-        B -- HTTP/REST --> C(API Service: Spring Boot)
-        C -- JDBC/SQL --> D[Database: PostgreSQL]
+    %% Backend Services
+    subgraph backend[Backend Services]
+        B -->|HTTP/REST| C(API Service: Spring Boot)
+        C -->|JDBC/SQL| D[Database: PostgreSQL]
     end
 
-    subgraph Infrastructure
-        D -- Docker Volumes --> E[Persistent Data Storage]
+    %% Infrastructure
+    subgraph infra[Infrastructure]
+        D -->|Docker Volumes| E[Persistent Data Storage]
     end
 
-    subgraph Security Layer
-        C -- Filters --> F(Authentication/Rate Limiting)
-        F -- Input Validation --> G(Data Integrity)
+    %% Security Layer
+    subgraph security[Security Layer]
+        C -->|Filters| F(Authentication/Rate Limiting)
+        F -->|Input Validation| G(Data Integrity)
     end
 
-    subgraph Data Flow (Setup)
-        H[NYC Open Data] -- Initial Load --> D
-        Script[db-seed.sh] -- Data Migration --> D
+    %% Data Flow (Setup)
+    subgraph setup["Data Flow (Setup)"]
+        H[NYC Open Data] -->|Initial Load| D
+        Script[db-seed.sh] -->|Data Migration| D
     end
 
-    A --- "Access UI" --- B
-    B --- "Search Requests" --- C
-    C --- "Query/Store Data" --- D
-    C --- "Enforces Policy" --- F
-    F --- "Protects API" --- C
-    G --- "Prevents Attacks" --- C
+    %% Additional labeled relationships
+    A ---|Access UI| B
+    B ---|Search Requests| C
+    C ---|Query/Store Data| D
+    C ---|Enforces Policy| F
+    F ---|Protects API| C
+    G ---|Prevents Attacks| C
 
+    %% Styling
     style B fill:#f9f,stroke:#333,stroke-width:2px
     style C fill:#ccf,stroke:#333,stroke-width:2px
     style D fill:#afa,stroke:#333,stroke-width:2px
