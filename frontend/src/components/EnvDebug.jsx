@@ -1,8 +1,26 @@
 /**
- * Debug component to verify environment variables are loading correctly
+ * @fileoverview Environment variables debug component.
+ * Displays loaded environment variables for troubleshooting configuration issues.
+ * Shows API key status, validation, and troubleshooting steps.
+ * 
+ * @module components/EnvDebug
+ * @requires @chakra-ui/react
  */
+
 import { Box, Text, Code, VStack, HStack } from '@chakra-ui/react';
 
+/**
+ * Environment debug component for verifying environment variable configuration.
+ * Displays the status of VITE_GOOGLE_MAPS_API_KEY and VITE_API_URL,
+ * validates API key presence, and provides troubleshooting guidance.
+ * 
+ * @component
+ * @returns {JSX.Element} Debug panel UI with environment variable status
+ * 
+ * @example
+ * // Typically used temporarily during development
+ * <EnvDebug />
+ */
 export const EnvDebug = () => {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
   const apiUrl = import.meta.env.VITE_API_URL;

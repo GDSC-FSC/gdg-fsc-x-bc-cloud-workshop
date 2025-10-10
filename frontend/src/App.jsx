@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Main application component for NYC Restaurants Inspector.
+ * Manages application state, API connectivity, search functionality, and view modes.
+ * 
+ * @module App
+ * @requires react
+ * @requires @chakra-ui/react
+ * @requires react-icons/fa
+ */
+
 import { useState, useEffect } from 'react';
 import { Container, Box, Stack, Text, Heading, VStack, HStack, Group } from '@chakra-ui/react';
 import { FaList, FaMapMarkedAlt, FaCheckCircle, FaExclamationCircle, FaClock } from 'react-icons/fa';
@@ -9,20 +19,69 @@ import { EnvDebug } from './components/EnvDebug';
 import { Button } from './components/ui/button';
 import restaurantApi from './services/api';
 
+/**
+ * Main application component that orchestrates the NYC Restaurants Inspector.
+ * Provides search functionality, API health monitoring, and toggleable view modes (list/map).
+ * 
+ * @component
+ * @returns {JSX.Element} The main application UI
+ * 
+ * @example
+ * // Rendered in main.jsx
+ * <App />
+ */
 function App() {
+  /**
+   * @type {[Array<Object>, Function]} Search results from the API
+   */
   const [results, setResults] = useState([]);
+  
+  /**
+   * @type {[boolean, Function]} Loading state for search operations
+   */
   const [isLoading, setIsLoading] = useState(false);
+  
+  /**
+   * @type {[Object|null, Function]} Currently selected restaurant for details view
+   */
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+  
+  /**
+   * @type {[boolean, Function]} Details modal visibility state
+   */
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  
+  /**
+   * @type {[string, Function]} API connection status ('checking' | 'connected' | 'disconnected')
+   */
   const [apiStatus, setApiStatus] = useState('checking');
+  
+  /**
+   * @type {[Object|null, Function]} Notification message with type and text
+   */
   const [notification, setNotification] = useState(null);
-  const [viewMode, setViewMode] = useState('list'); // 'list' or 'map'
+  
+  /**
+   * @type {[string, Function]} Current view mode ('list' | 'map')
+   */
+  const [viewMode, setViewMode] = useState('list');
 
-  // Check API health on mount
+  /**
+   * Check API health status on component mount.
+   * Runs once when the component is first rendered.
+   */
   useEffect(() => {
     checkApiHealth();
   }, []);
 
+  /**
+   * Checks the health status of the backend API.
+   * Updates apiStatus state based on the response.
+   * 
+   * @async
+   * @function
+   * @returns {Promise<void>}
+   */
   const checkApiHealth = async () => {
     try {
       await restaurantApi.healthCheck();
@@ -34,6 +93,19 @@ function App() {
     }
   };
 
+  /**
+   * Handles restaurant search requests from the SearchForm.
+   * Makes API call, updates results, and manages loading/notification states.
+   * 
+   * @async
+   * @function
+   * @param {Object} searchParams - Search parameters from the form
+   * @param {string} [searchParams.borough] - Borough to filter by
+   * @param {string} [searchParams.cuisine] - Cuisine type to filter by
+   * @param {string} [searchParams.minGrade] - Minimum grade to filter by
+   * @param {number} [searchParams.limit] - Maximum number of results
+   * @returns {Promise<void>}
+   */
   const handleSearch = async (searchParams) => {
     setIsLoading(true);
     setNotification(null);
@@ -60,16 +132,39 @@ function App() {
     }
   };
 
+  /**
+   * Opens the details modal for a selected restaurant.
+   * 
+   * @function
+   * @param {Object} restaurant - Restaurant object to display details for
+   * @param {string} restaurant.dba - Restaurant name
+   * @param {string} restaurant.boro - Borough location
+   * @param {string} restaurant.building - Building number
+   * @param {string} restaurant.street - Street name
+   * @returns {void}
+   */
   const handleViewDetails = (restaurant) => {
     setSelectedRestaurant(restaurant);
     setIsDetailsOpen(true);
   };
 
+  /**
+   * Closes the details modal and clears selected restaurant.
+   * 
+   * @function
+   * @returns {void}
+   */
   const handleCloseDetails = () => {
     setIsDetailsOpen(false);
     setSelectedRestaurant(null);
   };
 
+  /**
+   * Returns the appropriate icon component based on API status.
+   * 
+   * @function
+   * @returns {JSX.Element} Icon component (CheckCircle, ExclamationCircle, or Clock)
+   */
   const getApiStatusIcon = () => {
     switch (apiStatus) {
       case 'connected':
@@ -81,6 +176,13 @@ function App() {
     }
   };
 
+  /**
+   * Returns the appropriate color string based on API status.
+   * Used for styling the status indicator.
+   * 
+   * @function
+   * @returns {string} Chakra UI color token ('green.500' | 'red.500' | 'yellow.500')
+   */
   const getApiStatusColor = () => {
     switch (apiStatus) {
       case 'connected':

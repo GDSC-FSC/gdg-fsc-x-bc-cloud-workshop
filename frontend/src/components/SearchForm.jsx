@@ -1,6 +1,12 @@
 /**
- * Search Form Component
- * Allows users to filter restaurants by borough, cuisine, grade, and limit
+ * @fileoverview Restaurant search form component with dynamic filters.
+ * Provides UI for filtering NYC restaurants by borough, cuisine, grade, and result limit.
+ * Loads reference data (boroughs, cuisines) from the API on mount.
+ * 
+ * @module components/SearchForm
+ * @requires react
+ * @requires prop-types
+ * @requires @chakra-ui/react
  */
 
 import { useState, useEffect } from 'react';
@@ -9,11 +15,47 @@ import { Box, Button, Input, Stack, Text, NativeSelectRoot, NativeSelectField } 
 import { Field } from './ui/field';
 import restaurantApi from '../services/api';
 
+/**
+ * Available NYC health inspection grades.
+ * @constant {string[]}
+ */
 const GRADES = ['All', 'A', 'B', 'C', 'P', 'Z', 'NOT_YET_GRADED'];
 
+/**
+ * Restaurant search form component with dynamic filtering.
+ * Fetches available boroughs and cuisines from the API and provides
+ * a form interface for searching restaurants with various criteria.
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @param {Function} props.onSearch - Callback function invoked with search parameters
+ * @param {boolean} [props.isLoading=false] - Loading state to disable form inputs
+ * @returns {JSX.Element} Search form UI
+ * 
+ * @example
+ * <SearchForm 
+ *   onSearch={(params) => console.log(params)} 
+ *   isLoading={false} 
+ * />
+ */
 const SearchForm = ({ onSearch, isLoading }) => {
+  /**
+   * @type {[string[], Function]} List of available NYC boroughs
+   */
   const [boroughs, setBoroughs] = useState([]);
+  
+  /**
+   * @type {[string[], Function]} List of available cuisine types
+   */
   const [cuisines, setCuisines] = useState([]);
+  
+  /**
+   * @type {[Object, Function]} Form data state
+   * @property {string} borough - Selected borough filter
+   * @property {string} cuisine - Cuisine type filter (partial match)
+   * @property {string} minGrade - Minimum health grade filter
+   * @property {number} limit - Maximum number of results (1-1000)
+   */
   const [formData, setFormData] = useState({
     borough: '',
     cuisine: '',
@@ -21,8 +63,17 @@ const SearchForm = ({ onSearch, isLoading }) => {
     limit: 50,
   });
 
-  // Load boroughs and cuisines on mount
+  /**
+   * Loads reference data (boroughs and cuisines) from the API on component mount.
+   * Fetches both datasets in parallel for better performance.
+   */
   useEffect(() => {
+    /**
+     * Fetches boroughs and cuisines from the API.
+     * @async
+     * @function
+     * @returns {Promise<void>}
+     */
     const loadReferenceData = async () => {
       try {
         const [boroughsData, cuisinesData] = await Promise.all([
@@ -38,6 +89,14 @@ const SearchForm = ({ onSearch, isLoading }) => {
     loadReferenceData();
   }, []);
 
+  /**
+   * Handles form submission and triggers search with non-empty parameters.
+   * Filters out empty values and normalizes the minGrade field.
+   * 
+   * @function
+   * @param {Event} e - Form submit event
+   * @returns {void}
+   */
   const handleSubmit = (e) => {
     e.preventDefault();
     
@@ -53,6 +112,12 @@ const SearchForm = ({ onSearch, isLoading }) => {
     onSearch(searchParams);
   };
 
+  /**
+   * Resets the form to its default state.
+   * 
+   * @function
+   * @returns {void}
+   */
   const handleReset = () => {
     setFormData({
       borough: '',

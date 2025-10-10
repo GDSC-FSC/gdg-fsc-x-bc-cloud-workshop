@@ -1,12 +1,35 @@
 /**
- * Results List Component
- * Displays a grid of restaurant search results
+ * @fileoverview Restaurant search results list component.
+ * Displays search results in a responsive grid layout with loading and empty states.
+ * 
+ * @module components/ResultsList
+ * @requires react
+ * @requires prop-types
+ * @requires @chakra-ui/react
  */
 
 import PropTypes from 'prop-types';
 import { Box, Grid, Text, Stack } from '@chakra-ui/react';
 import RestaurantCard from './RestaurantCard';
 
+/**
+ * Displays a responsive grid of restaurant search results.
+ * Handles loading states and empty results with appropriate UI feedback.
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @param {Array<Object>} [props.results=[]] - Array of restaurant objects to display
+ * @param {Function} props.onViewDetails - Callback invoked when user clicks on a restaurant
+ * @param {boolean} [props.isLoading=false] - Loading state for search operation
+ * @returns {JSX.Element} Results list UI with loading, empty, or populated states
+ * 
+ * @example
+ * <ResultsList 
+ *   results={restaurants} 
+ *   onViewDetails={(restaurant) => console.log(restaurant)} 
+ *   isLoading={false}
+ * />
+ */
 const ResultsList = ({ results, onViewDetails, isLoading }) => {
   if (isLoading) {
     return (

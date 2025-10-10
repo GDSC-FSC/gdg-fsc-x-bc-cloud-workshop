@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Components barrel export.
+ * Centralized export point for all React components in the application.
+ * Includes map components, UI primitives, and restaurant-specific components.
+ * 
+ * @module components
+ */
+
 export * from "./map";
 export * from "./ui";
 

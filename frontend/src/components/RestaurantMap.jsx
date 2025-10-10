@@ -1,7 +1,12 @@
 /**
- * Restaurant Map Component
- * Displays NYC restaurant locations on Google Maps with interactive markers
- * Uses the comprehensive GoogleMaps component with clustering and filtering
+ * @fileoverview Restaurant map component with Google Maps integration.
+ * Displays NYC restaurant locations with clustering, filtering, and interactive markers.
+ * Transforms restaurant inspection data into map-compatible format with grade-based coloring.
+ * 
+ * @module components/RestaurantMap
+ * @requires react
+ * @requires prop-types
+ * @requires @chakra-ui/react
  */
 
 import { useMemo } from 'react';
@@ -9,9 +14,20 @@ import PropTypes from 'prop-types';
 import { GoogleMaps } from './map';
 import { Box, Text } from '@chakra-ui/react';
 
+/**
+ * Google Maps API key from environment variables.
+ * @constant {string}
+ */
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'YOUR_API_KEY';
 
-// NYC bounds
+/**
+ * Geographic bounds for New York City.
+ * @constant {Object}
+ * @property {number} north - Northern latitude boundary
+ * @property {number} south - Southern latitude boundary
+ * @property {number} west - Western longitude boundary
+ * @property {number} east - Eastern longitude boundary
+ */
 const NYC_BOUNDS = {
   north: 40.9176,
   south: 40.4774,
@@ -19,11 +35,21 @@ const NYC_BOUNDS = {
   east: -73.7004,
 };
 
-// NYC center coordinates
+/**
+ * Center coordinates for New York City (Manhattan).
+ * @constant {Object}
+ * @property {number} lat - Latitude
+ * @property {number} lng - Longitude
+ */
 const NYC_CENTER = { lat: 40.7128, lng: -74.0060 };
 
 /**
- * Convert restaurant grade to status for the GoogleMaps component
+ * Converts restaurant health grade to map marker status.
+ * Maps letter grades to visual marker categories for the GoogleMaps component.
+ * 
+ * @function
+ * @param {string} grade - Health inspection grade (A, B, C, P, Z)
+ * @returns {string} Status category ('Active' for A, 'Special' for B, 'Inactive' for C/P/Z)
  */
 const gradeToStatus = (grade) => {
   switch (grade?.toUpperCase()) {
@@ -41,7 +67,16 @@ const gradeToStatus = (grade) => {
 };
 
 /**
- * Transform restaurants into the format expected by GoogleMaps component
+ * Transforms restaurant data into GoogleMaps component-compatible format.
+ * Categorizes restaurants by grade status and enriches with location metadata.
+ * Filters out restaurants without valid coordinates.
+ * 
+ * @function
+ * @param {Array<Object>} restaurants - Array of restaurant objects with inspection data
+ * @returns {Object} Categorized locations object with active, inactive, and special arrays
+ * @property {Array<Object>} active - Grade A restaurants (green markers)
+ * @property {Array<Object>} inactive - Grade C/P/Z restaurants (gray/red markers)
+ * @property {Array<Object>} special - Grade B restaurants (orange markers)
  */
 const transformRestaurantsToLocations = (restaurants) => {
   const locations = {
@@ -84,14 +119,39 @@ const transformRestaurantsToLocations = (restaurants) => {
   return locations;
 };
 
+/**
+ * Restaurant map component with interactive markers and clustering.
+ * Displays restaurant locations on Google Maps with grade-based coloring,
+ * automatic centering, and zoom level optimization.
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @param {Array<Object>} props.restaurants - Array of restaurant objects with lat/lng coordinates
+ * @param {Function} props.onViewDetails - Callback invoked when a restaurant marker is clicked
+ * @returns {JSX.Element} Google Maps UI or API key error message
+ * 
+ * @example
+ * <RestaurantMap 
+ *   restaurants={searchResults} 
+ *   onViewDetails={(restaurant) => setSelectedRestaurant(restaurant)}
+ * />
+ */
 const RestaurantMap = ({ restaurants, onViewDetails }) => {
-  // Transform restaurants to location format
+  /**
+   * Transformed restaurant locations categorized by grade status.
+   * Memoized to prevent unnecessary recalculations.
+   * @type {Object}
+   */
   const locations = useMemo(() => 
     transformRestaurantsToLocations(restaurants),
     [restaurants]
   );
 
-  // Calculate center from restaurants
+  /**
+   * Calculated map center based on restaurant positions.
+   * Falls back to NYC center if no valid coordinates exist.
+   * @type {Object}
+   */
   const center = useMemo(() => {
     const validRestaurants = restaurants.filter(r => r.latitude && r.longitude);
     if (validRestaurants.length === 0) return NYC_CENTER;
@@ -101,7 +161,11 @@ const RestaurantMap = ({ restaurants, onViewDetails }) => {
     return { lat: avgLat, lng: avgLng };
   }, [restaurants]);
 
-  // Determine zoom based on restaurant count
+  /**
+   * Dynamic zoom level based on number of restaurants.
+   * More restaurants = zoomed out, fewer = zoomed in.
+   * @type {number}
+   */
   const defaultZoom = useMemo(() => {
     const validCount = restaurants.filter(r => r.latitude && r.longitude).length;
     if (validCount === 0) return 11;
@@ -110,7 +174,11 @@ const RestaurantMap = ({ restaurants, onViewDetails }) => {
     return 12;
   }, [restaurants]);
 
-  // Custom map styles for restaurant view
+  /**
+   * Custom Google Maps styles to hide competing POI markers.
+   * Reduces visual clutter by hiding business markers and labels.
+   * @type {Array<Object>}
+   */
   const mapStyles = useMemo(() => [
     {
       featureType: "poi",

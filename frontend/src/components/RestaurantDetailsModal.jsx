@@ -1,6 +1,13 @@
 /**
- * Restaurant Details Modal Component
- * Displays full inspection history for a selected restaurant
+ * @fileoverview Restaurant details modal/drawer component.
+ * Displays complete inspection history, violations, and location details
+ * for a selected restaurant in a side drawer interface.
+ * 
+ * @module components/RestaurantDetailsModal
+ * @requires react
+ * @requires prop-types
+ * @requires @chakra-ui/react
+ * @requires react-icons/fa
  */
 
 import { useState, useEffect } from 'react';
@@ -30,8 +37,19 @@ import {
 import { FaMapMarkerAlt, FaPhone, FaExternalLinkAlt, FaCalendarAlt, FaClipboardCheck } from 'react-icons/fa';
 import restaurantApi from '../services/api';
 
+/**
+ * Google Maps API key from environment variables.
+ * @constant {string}
+ */
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'YOUR_API_KEY';
 
+/**
+ * Returns color scheme for grade badges based on inspection grade.
+ * 
+ * @function
+ * @param {string} grade - Health inspection grade (A, B, C, P, Z)
+ * @returns {string} Chakra UI color scheme name
+ */
 const getGradeBadgeColor = (grade) => {
   switch (grade?.toUpperCase()) {
     case 'A':
@@ -48,7 +66,28 @@ const getGradeBadgeColor = (grade) => {
   }
 };
 
+/**
+ * Individual inspection card component showing single inspection record.
+ * Displays inspection date, score, grade, violations, and actions taken.
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @param {Object} props.inspection - Inspection record data
+ * @param {string} props.inspection.inspection_date - Date of inspection
+ * @param {number} props.inspection.score - Inspection score
+ * @param {string} props.inspection.grade - Health grade
+ * @param {string} props.inspection.violation_description - Description of violations
+ * @param {string} props.inspection.action - Action taken by inspector
+ * @param {string} props.inspection.critical_flag - Violation criticality
+ * @param {number} props.index - Index of inspection in history array
+ * @returns {JSX.Element} Inspection card UI
+ */
 const InspectionCard = ({ inspection, index }) => {
+  /**
+   * Returns text color based on inspection score severity.
+   * @param {number} score - Inspection score
+   * @returns {string} Chakra UI color token
+   */
   const getScoreColor = (score) => {
     if (score === undefined || score === null) return 'gray.600';
     if (score <= 13) return 'green.600';
@@ -56,6 +95,11 @@ const InspectionCard = ({ inspection, index }) => {
     return 'orange.600';
   };
 
+  /**
+   * Returns background color based on inspection score.
+   * @param {number} score - Inspection score
+   * @returns {string} Chakra UI color token
+   */
   const getScoreBg = (score) => {
     if (score === undefined || score === null) return 'gray.50';
     if (score <= 13) return 'green.50';
@@ -63,6 +107,11 @@ const InspectionCard = ({ inspection, index }) => {
     return 'orange.50';
   };
 
+  /**
+   * Returns border color based on inspection score.
+   * @param {number} score - Inspection score
+   * @returns {string} Chakra UI color token
+   */
   const getScoreBorder = (score) => {
     if (score === undefined || score === null) return 'gray.300';
     if (score <= 13) return 'green.400';
@@ -235,17 +284,68 @@ InspectionCard.propTypes = {
   index: PropTypes.number.isRequired,
 };
 
+/**
+ * Restaurant details modal/drawer component.
+ * Fetches and displays complete inspection history, violations, contact information,
+ * and location details in a sliding drawer interface.
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @param {boolean} props.isOpen - Modal visibility state
+ * @param {Function} props.onClose - Callback to close the modal
+ * @param {Object|null} props.restaurant - Selected restaurant object
+ * @param {string} props.restaurant.dba - Restaurant name
+ * @param {string} props.restaurant.boro - Borough location
+ * @param {string} props.restaurant.building - Building number
+ * @param {string} props.restaurant.street - Street name
+ * @param {string} props.restaurant.zipcode - ZIP code
+ * @param {string} props.restaurant.phone - Phone number
+ * @param {string} props.restaurant.cuisine_description - Cuisine type
+ * @param {number} props.restaurant.latitude - Latitude coordinate
+ * @param {number} props.restaurant.longitude - Longitude coordinate
+ * @returns {JSX.Element} Restaurant details drawer UI
+ * 
+ * @example
+ * <RestaurantDetailsModal 
+ *   isOpen={isOpen}
+ *   onClose={() => setIsOpen(false)}
+ *   restaurant={selectedRestaurant}
+ * />
+ */
 const RestaurantDetailsModal = ({ isOpen, onClose, restaurant }) => {
+  /**
+   * @type {[Object|null, Function]} Detailed inspection history data
+   */
   const [details, setDetails] = useState(null);
+  
+  /**
+   * @type {[boolean, Function]} Loading state for API request
+   */
   const [loading, setLoading] = useState(false);
+  
+  /**
+   * @type {[string|null, Function]} Error message state
+   */
   const [error, setError] = useState(null);
 
+  /**
+   * Loads restaurant details when modal opens.
+   * Triggers API call whenever modal is opened with a valid restaurant.
+   */
   useEffect(() => {
     if (isOpen && restaurant) {
       loadDetails();
     }
   }, [isOpen, restaurant]);
 
+  /**
+   * Fetches complete inspection history for the selected restaurant.
+   * Makes API call with restaurant name and borough for accurate matching.
+   * 
+   * @async
+   * @function
+   * @returns {Promise<void>}
+   */
   const loadDetails = async () => {
     setLoading(true);
     setError(null);

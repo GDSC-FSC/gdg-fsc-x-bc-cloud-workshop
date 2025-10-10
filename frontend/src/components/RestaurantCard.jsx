@@ -1,6 +1,13 @@
 /**
- * Restaurant Card Component
- * Displays individual restaurant inspection information in a card format
+ * @fileoverview Individual restaurant card component with inspection details.
+ * Displays restaurant information including grade, location, inspection date,
+ * violations, and critical flags in a styled card format.
+ * 
+ * @module components/RestaurantCard
+ * @requires react
+ * @requires prop-types
+ * @requires @chakra-ui/react
+ * @requires react-icons/fa
  */
 
 import PropTypes from 'prop-types';
@@ -10,6 +17,14 @@ import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { FaUtensils, FaMapMarkerAlt, FaPhone, FaCalendarAlt, FaExclamationTriangle, FaCheckCircle } from 'react-icons/fa';
 
+/**
+ * Returns the color scheme for a grade badge.
+ * Maps health inspection grades to Chakra UI color schemes.
+ * 
+ * @function
+ * @param {string} grade - Health inspection grade (A, B, C, P, Z, NOT_YET_GRADED)
+ * @returns {string} Chakra UI color scheme name
+ */
 const getGradeBadgeColor = (grade) => {
   switch (grade?.toUpperCase()) {
     case 'A':
@@ -28,6 +43,14 @@ const getGradeBadgeColor = (grade) => {
   }
 };
 
+/**
+ * Returns the gradient background style for a grade ribbon.
+ * Creates color-coded gradient backgrounds for visual grade representation.
+ * 
+ * @function
+ * @param {string} grade - Health inspection grade (A, B, C, P, Z)
+ * @returns {string} CSS gradient string
+ */
 const getGradeBackground = (grade) => {
   switch (grade?.toUpperCase()) {
     case 'A':
@@ -44,10 +67,26 @@ const getGradeBackground = (grade) => {
   }
 };
 
+/**
+ * Returns the color scheme for a critical flag badge.
+ * Determines badge color based on violation criticality.
+ * 
+ * @function
+ * @param {string} criticalFlag - Critical flag value ('CRITICAL' or other)
+ * @returns {string} Chakra UI color scheme name ('red' or 'gray')
+ */
 const getCriticalBadgeColor = (criticalFlag) => {
   return criticalFlag === 'CRITICAL' ? 'red' : 'gray';
 };
 
+/**
+ * Returns the color for an inspection score based on severity.
+ * Lower scores are better (green), higher scores indicate more violations (orange).
+ * 
+ * @function
+ * @param {number} score - Inspection score
+ * @returns {string} Chakra UI color token
+ */
 const getScoreColor = (score) => {
   if (score === undefined || score === null) return 'gray.600';
   if (score <= 13) return 'green.600';
@@ -55,6 +94,37 @@ const getScoreColor = (score) => {
   return 'orange.600';
 };
 
+/**
+ * Restaurant card component displaying inspection details.
+ * Shows restaurant name, location, inspection grade, score, violations,
+ * and critical flags in an interactive card with hover effects.
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @param {Object} props.restaurant - Restaurant data object
+ * @param {string} props.restaurant.camis - Unique restaurant identifier
+ * @param {string} props.restaurant.dba - Restaurant name (Doing Business As)
+ * @param {string} props.restaurant.boro - Borough location
+ * @param {string} props.restaurant.building - Building number
+ * @param {string} props.restaurant.street - Street name
+ * @param {string} props.restaurant.zipcode - ZIP code
+ * @param {string} props.restaurant.phone - Phone number
+ * @param {string} props.restaurant.cuisine_description - Cuisine type
+ * @param {string} props.restaurant.inspection_date - Inspection date (ISO format)
+ * @param {string} props.restaurant.grade - Health grade (A, B, C, P, Z, NOT_YET_GRADED)
+ * @param {number} props.restaurant.score - Inspection score (lower is better)
+ * @param {string} props.restaurant.critical_flag - Violation criticality
+ * @param {string} props.restaurant.violation_description - Description of violations
+ * @param {string} props.restaurant.action - Action taken by inspector
+ * @param {Function} props.onViewDetails - Callback invoked when card is clicked
+ * @returns {JSX.Element} Restaurant card UI
+ * 
+ * @example
+ * <RestaurantCard 
+ *   restaurant={restaurantData} 
+ *   onViewDetails={(restaurant) => console.log(restaurant)}
+ * />
+ */
 const RestaurantCard = ({ restaurant, onViewDetails }) => {
   const {
     dba,
