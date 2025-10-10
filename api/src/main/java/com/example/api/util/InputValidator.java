@@ -15,7 +15,8 @@ public class InputValidator {
   // Patterns for validation
   private static final Pattern ALPHANUMERIC_SPACE = Pattern.compile("^[a-zA-Z0-9\\s\\-',.&()]+$");
   private static final Pattern BOROUGH_PATTERN = Pattern.compile("^[A-Z\\s]+$");
-  private static final Pattern GRADE_PATTERN = Pattern.compile("^[A-Z]$");
+  // Updated to accept both single letters (A, B, C) and special values (NOT_YET_GRADED, P, Z)
+  private static final Pattern GRADE_PATTERN = Pattern.compile("^[A-Z_]+$");
   private static final Pattern PHONE_PATTERN = Pattern.compile("^[0-9\\-()\\s]+$");
 
   // SQL injection keywords to detect
@@ -69,7 +70,7 @@ public class InputValidator {
    * Validates a borough name.
    *
    * @param input the input to validate
-   * @return sanitized input
+   * @return sanitized input (preserves original case to match database values)
    * @throws IllegalArgumentException if input is invalid
    */
   public static String validateBorough(String input) {
@@ -77,13 +78,15 @@ public class InputValidator {
       return null;
     }
 
-    String sanitized = sanitize(input).toUpperCase();
+    // Don't uppercase - database has mixed case values like "Bronx", "Manhattan"
+    String sanitized = sanitize(input);
 
     if (sanitized.length() > MAX_BOROUGH_LENGTH) {
       throw new IllegalArgumentException("Borough name is too long");
     }
 
-    if (!BOROUGH_PATTERN.matcher(sanitized).matches()) {
+    // Check against uppercase version for pattern validation only
+    if (!BOROUGH_PATTERN.matcher(sanitized.toUpperCase()).matches()) {
       throw new IllegalArgumentException("Borough name contains invalid characters");
     }
 
@@ -120,9 +123,10 @@ public class InputValidator {
 
   /**
    * Validates a grade value.
+   * Accepts single letters (A, B, C) and special values (P, Z, NOT_YET_GRADED).
    *
    * @param input the input to validate
-   * @return sanitized input
+   * @return sanitized input in uppercase
    * @throws IllegalArgumentException if input is invalid
    */
   public static String validateGrade(String input) {
@@ -132,8 +136,9 @@ public class InputValidator {
 
     String sanitized = sanitize(input).toUpperCase();
 
-    if (sanitized.length() != 1) {
-      throw new IllegalArgumentException("Grade must be a single character");
+    // Allow both single character grades and multi-character special values
+    if (sanitized.length() < 1 || sanitized.length() > 20) {
+      throw new IllegalArgumentException("Grade must be between 1 and 20 characters");
     }
 
     if (!GRADE_PATTERN.matcher(sanitized).matches()) {

@@ -53,6 +53,9 @@ This workshop demonstrates a full-stack cloud application using Docker, PostgreS
 - **Database & Data Loading:** [Database Guide](database/README.md)
 - **Docker Configuration:** [Docker Setup](docker/README.md)
 - **Frontend Development:** [Frontend Guide](frontend/README.md)
+  - [JSDoc Documentation](frontend/JSDOC_DOCUMENTATION.md)
+  - [Google Maps Setup](frontend/GOOGLE_MAPS_SETUP.md)
+  - [Design Improvements](frontend/DESIGN_IMPROVEMENTS.md)
 - **API Development & Security:** [API Documentation](api/README.md)
   - [Security Features](api/SECURITY.md)
   - [Security Quick Reference](api/SECURITY_QUICK_REFERENCE.md)
@@ -112,6 +115,8 @@ This workshop demonstrates a full-stack cloud application using Docker, PostgreS
 ✅ Direct Google Maps links  
 ✅ Smooth animations and transitions  
 ✅ Modern responsive design  
+✅ Comprehensive JSDoc documentation  
+✅ Full code API reference  
 
 ## Resources
 

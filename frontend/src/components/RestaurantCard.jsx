@@ -134,11 +134,15 @@ const RestaurantCard = ({ restaurant, onViewDetails }) => {
     zipcode,
     phone,
     cuisine_description,
+    cuisineDescription,
     inspection_date,
+    inspectionDate,
     grade,
     score,
     critical_flag,
+    criticalFlag,
     violation_description,
+    violationDescription,
     action,
   } = restaurant;
 
@@ -197,7 +201,7 @@ const RestaurantCard = ({ restaurant, onViewDetails }) => {
               </Text>
             </HStack>
             <Text fontSize="sm" color="gray.600" fontWeight="medium">
-              {cuisine_description || 'Unknown Cuisine'}
+              {cuisineDescription || cuisine_description || 'Unknown Cuisine'}
             </Text>
           </Box>
 
@@ -234,7 +238,7 @@ const RestaurantCard = ({ restaurant, onViewDetails }) => {
           </Box>
 
           {/* Inspection Info */}
-          {inspection_date && (
+          {(inspectionDate || inspection_date) && (
             <Box 
               p={3} 
               bg="gray.50" 
@@ -247,11 +251,17 @@ const RestaurantCard = ({ restaurant, onViewDetails }) => {
                   <HStack gap={2}>
                     <FaCalendarAlt color="#6b7280" size={14} />
                     <Text fontSize="sm" fontWeight="semibold" color="gray.700">
-                      {new Date(inspection_date).toLocaleDateString('en-US', { 
-                        year: 'numeric', 
-                        month: 'short', 
-                        day: 'numeric' 
-                      })}
+                      {(() => {
+                        const dateStr = inspectionDate || inspection_date;
+                        if (!dateStr) return 'No date';
+                        const date = new Date(dateStr);
+                        if (isNaN(date.getTime())) return 'Invalid date';
+                        return date.toLocaleDateString('en-US', { 
+                          year: 'numeric', 
+                          month: 'short', 
+                          day: 'numeric' 
+                        });
+                      })()}
                     </Text>
                   </HStack>
                   {score !== undefined && score !== null && (
@@ -264,20 +274,20 @@ const RestaurantCard = ({ restaurant, onViewDetails }) => {
                   )}
                 </HStack>
 
-                {critical_flag && (
+                {(criticalFlag || critical_flag) && (
                   <Badge 
-                    colorScheme={getCriticalBadgeColor(critical_flag)} 
+                    colorScheme={getCriticalBadgeColor(criticalFlag || critical_flag)} 
                     size="sm"
-                    variant={critical_flag === 'CRITICAL' ? 'solid' : 'subtle'}
+                    variant={(criticalFlag || critical_flag) === 'Critical' ? 'solid' : 'subtle'}
                   >
-                    {critical_flag === 'CRITICAL' ? '⚠️ ' : ''}
-                    {critical_flag.replace(/_/g, ' ')}
+                    {(criticalFlag || critical_flag) === 'Critical' ? '⚠️ ' : ''}
+                    {(criticalFlag || critical_flag).replace(/_/g, ' ')}
                   </Badge>
                 )}
 
-                {violation_description && (
+                {(violationDescription || violation_description) && (
                   <Text fontSize="xs" color="gray.600" lineClamp={2} lineHeight="tall">
-                    {violation_description}
+                    {violationDescription || violation_description}
                   </Text>
                 )}
 

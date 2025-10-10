@@ -11,15 +11,17 @@
 
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Box, Button, Input, Stack, Text, NativeSelectRoot, NativeSelectField } from '@chakra-ui/react';
+import { Box, Input, Stack, Text } from '@chakra-ui/react';
+import { Button } from './ui/button';
 import { Field } from './ui/field';
+import { NativeSelect } from './ui/native-select';
 import restaurantApi from '../services/api';
 
 /**
  * Available NYC health inspection grades.
  * @constant {string[]}
  */
-const GRADES = ['All', 'A', 'B', 'C', 'P', 'Z', 'NOT_YET_GRADED'];
+const GRADES = ['All', 'A', 'B', 'C', 'P', 'Z'];
 
 /**
  * Restaurant search form component with dynamic filtering.
@@ -75,15 +77,40 @@ const SearchForm = ({ onSearch, isLoading }) => {
      * @returns {Promise<void>}
      */
     const loadReferenceData = async () => {
+      console.log('🔄 [SearchForm] Loading reference data (boroughs & cuisines)...');
       try {
         const [boroughsData, cuisinesData] = await Promise.all([
           restaurantApi.getBoroughs(),
           restaurantApi.getCuisines(),
         ]);
-        setBoroughs(boroughsData.boroughs || []);
-        setCuisines(cuisinesData.cuisines || []);
+        
+        console.log('📦 [SearchForm] Raw API responses:', {
+          boroughsData: { type: Array.isArray(boroughsData) ? 'array' : typeof boroughsData, data: boroughsData },
+          cuisinesData: { type: Array.isArray(cuisinesData) ? 'array' : typeof cuisinesData, length: cuisinesData?.length },
+        });
+        
+        // API returns flat arrays directly, not wrapped in objects
+        const boroughsList = Array.isArray(boroughsData) ? boroughsData : (boroughsData.boroughs || []);
+        const cuisinesList = Array.isArray(cuisinesData) ? cuisinesData : (cuisinesData.cuisines || []);
+        
+        // Filter out invalid values (like "0" in boroughs)
+        const validBoroughs = boroughsList.filter(b => b && b !== '0' && b.trim() !== '');
+        const validCuisines = cuisinesList.filter(c => c && c.trim() !== '');
+        
+        console.log('✅ [SearchForm] Reference data loaded:', {
+          boroughs: { count: validBoroughs.length, items: validBoroughs },
+          cuisines: { count: validCuisines.length, sample: validCuisines.slice(0, 10) },
+          timestamp: new Date().toISOString(),
+        });
+        
+        setBoroughs(validBoroughs);
+        setCuisines(validCuisines);
       } catch (error) {
-        console.error('Failed to load reference data:', error);
+        console.error('❌ [SearchForm] Failed to load reference data:', {
+          error: error.message,
+          stack: error.stack,
+          timestamp: new Date().toISOString(),
+        });
       }
     };
     loadReferenceData();
@@ -100,6 +127,8 @@ const SearchForm = ({ onSearch, isLoading }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
+    console.log('📝 [SearchForm] Form submitted with data:', formData);
+    
     // Build search params, excluding empty values
     const searchParams = {};
     if (formData.borough) searchParams.borough = formData.borough;
@@ -108,6 +137,8 @@ const SearchForm = ({ onSearch, isLoading }) => {
       searchParams.minGrade = formData.minGrade;
     }
     searchParams.limit = formData.limit;
+    
+    console.log('🔍 [SearchForm] Triggering search with params:', searchParams);
 
     onSearch(searchParams);
   };
@@ -119,6 +150,7 @@ const SearchForm = ({ onSearch, isLoading }) => {
    * @returns {void}
    */
   const handleReset = () => {
+    console.log('🔄 [SearchForm] Resetting form to defaults');
     setFormData({
       borough: '',
       cuisine: '',
@@ -143,20 +175,18 @@ const SearchForm = ({ onSearch, isLoading }) => {
         </Text>
 
         <Field label="Borough" helperText="Select a specific NYC borough">
-          <NativeSelectRoot>
-            <NativeSelectField
-              value={formData.borough}
-              onChange={(e) => setFormData({ ...formData, borough: e.target.value })}
-              disabled={isLoading}
-            >
-              <option value="">All Boroughs</option>
-              {boroughs.map((borough) => (
-                <option key={borough} value={borough}>
-                  {borough}
-                </option>
-              ))}
-            </NativeSelectField>
-          </NativeSelectRoot>
+          <NativeSelect
+            value={formData.borough}
+            onChange={(e) => setFormData({ ...formData, borough: e.target.value })}
+            disabled={isLoading}
+            placeholder="All Boroughs"
+          >
+            {boroughs.map((borough) => (
+              <option key={borough} value={borough}>
+                {borough}
+              </option>
+            ))}
+          </NativeSelect>
         </Field>
 
         <Field label="Cuisine Type" helperText="Filter by cuisine (partial match)">
@@ -176,19 +206,18 @@ const SearchForm = ({ onSearch, isLoading }) => {
         </Field>
 
         <Field label="Minimum Grade" helperText="Filter by health inspection grade">
-          <NativeSelectRoot>
-            <NativeSelectField
-              value={formData.minGrade}
-              onChange={(e) => setFormData({ ...formData, minGrade: e.target.value })}
-              disabled={isLoading}
-            >
-              {GRADES.map((grade) => (
-                <option key={grade} value={grade === 'All' ? '' : grade}>
-                  {grade === 'All' ? 'All Grades' : `Grade ${grade}`}
-                </option>
-              ))}
-            </NativeSelectField>
-          </NativeSelectRoot>
+          <NativeSelect
+            value={formData.minGrade}
+            onChange={(e) => setFormData({ ...formData, minGrade: e.target.value })}
+            disabled={isLoading}
+            placeholder="All Grades"
+          >
+            {GRADES.filter(g => g !== 'All').map((grade) => (
+              <option key={grade} value={grade}>
+                Grade {grade}
+              </option>
+            ))}
+          </NativeSelect>
         </Field>
 
         <Field label="Results Limit" helperText="Maximum number of results (1-1000)">

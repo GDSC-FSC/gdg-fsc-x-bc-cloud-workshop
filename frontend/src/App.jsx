@@ -83,19 +83,126 @@ function App() {
    * @returns {Promise<void>}
    */
   const checkApiHealth = async () => {
+    console.log('🏥 [App] Starting API health check...');
     try {
-      await restaurantApi.healthCheck();
+      const healthData = await restaurantApi.healthCheck();
       setApiStatus('connected');
-      console.log('✅ API Connected: Successfully connected to NYC Restaurants API');
+      console.log('✅ [App] API Connected:', {
+        status: 'connected',
+        apiHealth: healthData,
+        timestamp: new Date().toISOString(),
+      });
     } catch (error) {
       setApiStatus('disconnected');
-      console.error('❌ API Connection Failed: Could not connect to the backend API. Please ensure it is running on port 8080.');
+      console.error('❌ [App] API Connection Failed:', {
+        status: 'disconnected',
+        error: error.message,
+        timestamp: new Date().toISOString(),
+      });
     }
+  };
+
+  /**
+   * Filters and sorts restaurants based on grade criteria.
+   * Uses an efficient O(n) algorithm to filter by grade and sort by grade value.
+   * 
+   * Grade hierarchy: A (best) > B > C > P > Z (worst)
+   * When filtering by minGrade 'C', only restaurants with grade C, P, or Z are included.
+   * 
+   * @function
+   * @param {Array<Object>} restaurants - Raw restaurant data from API
+   * @param {string} [minGrade] - Minimum grade filter (e.g., 'C')
+   * @returns {Array<Object>} Filtered and sorted restaurants
+   */
+  const filterAndSortByGrade = (restaurants, minGrade) => {
+    if (!minGrade || minGrade === 'All') {
+      console.log('🔧 [App] No grade filter applied, returning all results');
+      return restaurants;
+    }
+
+    // Define grade hierarchy (lower index = better grade)
+    const gradeOrder = ['A', 'B', 'C', 'P', 'Z'];
+    const minGradeIndex = gradeOrder.indexOf(minGrade);
+
+    if (minGradeIndex === -1) {
+      console.warn('⚠️ [App] Invalid grade filter:', minGrade);
+      return restaurants;
+    }
+
+    console.log(`🔧 [App] ===== GRADE FILTERING START =====`);
+    console.log(`🔧 [App] Filter: Grade ${minGrade} or LOWER (worse grades)`);
+    console.log(`🔧 [App] Valid grades for filter: ${gradeOrder.slice(minGradeIndex).join(', ')}`);
+    console.log(`📊 [App] Initial restaurant count: ${restaurants.length}`);
+
+    // Log first 3 restaurants to see their grade format
+    console.log(`📋 [App] Sample restaurants (first 3):`, 
+      restaurants.slice(0, 3).map(r => ({
+        name: r.dba,
+        grade: r.grade,
+        gradeType: typeof r.grade
+      }))
+    );
+
+    // Filter: O(n) - single pass through array
+    let filteredOutCount = 0;
+    const filtered = restaurants.filter(restaurant => {
+      const restaurantGrade = restaurant.grade?.trim().toUpperCase();
+      
+      // Skip restaurants without grades
+      if (!restaurantGrade) {
+        console.log(`⚠️ [App] No grade for: ${restaurant.dba}`);
+        return false;
+      }
+
+      const restaurantGradeIndex = gradeOrder.indexOf(restaurantGrade);
+      
+      // Include only if grade is at minGrade level or lower (worse)
+      const shouldInclude = restaurantGradeIndex >= minGradeIndex;
+      
+      if (!shouldInclude) {
+        filteredOutCount++;
+        if (filteredOutCount <= 5) { // Only log first 5 to avoid spam
+          console.log(`❌ [App] Filtered out: ${restaurant.dba} (Grade ${restaurantGrade}) - better than ${minGrade}`);
+        }
+      } else {
+        console.log(`✅ [App] Included: ${restaurant.dba} (Grade ${restaurantGrade})`);
+      }
+      
+      return shouldInclude;
+    });
+
+    console.log(`📊 [App] After filtering: ${filtered.length} restaurants (removed ${filteredOutCount})`);
+
+    // Sort: O(n log n) - stable sort by grade quality (best to worst)
+    filtered.sort((a, b) => {
+      const gradeA = a.grade?.trim().toUpperCase() || 'Z';
+      const gradeB = b.grade?.trim().toUpperCase() || 'Z';
+      const indexA = gradeOrder.indexOf(gradeA);
+      const indexB = gradeOrder.indexOf(gradeB);
+      
+      // If grade not found, push to end
+      const finalIndexA = indexA === -1 ? 999 : indexA;
+      const finalIndexB = indexB === -1 ? 999 : indexB;
+      
+      return finalIndexA - finalIndexB;
+    });
+
+    console.log('✅ [App] Filtering and sorting complete');
+    const gradeDistribution = filtered.reduce((acc, r) => {
+      const grade = r.grade?.trim().toUpperCase() || 'NONE';
+      acc[grade] = (acc[grade] || 0) + 1;
+      return acc;
+    }, {});
+    console.log('📊 [App] Grade distribution:', gradeDistribution);
+    console.log(`🔧 [App] ===== GRADE FILTERING END =====`);
+
+    return filtered;
   };
 
   /**
    * Handles restaurant search requests from the SearchForm.
    * Makes API call, updates results, and manages loading/notification states.
+   * Applies client-side filtering and sorting for grade-based searches.
    * 
    * @async
    * @function
@@ -107,21 +214,41 @@ function App() {
    * @returns {Promise<void>}
    */
   const handleSearch = async (searchParams) => {
+    console.log('🔍 [App] Starting search with params:', searchParams);
     setIsLoading(true);
     setNotification(null);
     try {
       const response = await restaurantApi.searchRestaurants(searchParams);
-      setResults(response.restaurants || []);
+      let restaurants = response.restaurants || [];
+      const count = response.count || 0;
+      
+      console.log(`📦 [App] Received ${restaurants.length} restaurants from API`);
+      
+      // Apply client-side grade filtering and sorting
+      if (searchParams.minGrade && searchParams.minGrade !== 'All') {
+        restaurants = filterAndSortByGrade(restaurants, searchParams.minGrade);
+      }
+      
+      setResults(restaurants);
       setNotification({
         type: 'success',
-        message: `Found ${response.count || 0} restaurant${response.count !== 1 ? 's' : ''}`
+        message: `Found ${restaurants.length} restaurant${restaurants.length !== 1 ? 's' : ''}`
       });
-      console.log(`✅ Search Complete: Found ${response.count || 0} restaurant${response.count !== 1 ? 's' : ''}`);
+      console.log('✅ [App] Search Complete:', {
+        originalCount: count,
+        filteredCount: restaurants.length,
+        firstResult: restaurants[0] || null,
+        timestamp: new Date().toISOString(),
+      });
 
       // Auto-hide notification after 3 seconds
       setTimeout(() => setNotification(null), 3000);
     } catch (error) {
-      console.error('❌ Search Failed:', error.message || 'An error occurred while searching');
+      console.error('❌ [App] Search Failed:', {
+        error: error.message || 'An error occurred while searching',
+        searchParams,
+        timestamp: new Date().toISOString(),
+      });
       setResults([]);
       setNotification({
         type: 'error',
@@ -129,6 +256,7 @@ function App() {
       });
     } finally {
       setIsLoading(false);
+      console.log('🏁 [App] Search operation complete. Loading state:', false);
     }
   };
 
@@ -144,6 +272,11 @@ function App() {
    * @returns {void}
    */
   const handleViewDetails = (restaurant) => {
+    console.log('📋 [App] Opening details for restaurant:', {
+      name: restaurant.dba,
+      borough: restaurant.boro,
+      address: `${restaurant.building} ${restaurant.street}`,
+    });
     setSelectedRestaurant(restaurant);
     setIsDetailsOpen(true);
   };
@@ -155,6 +288,7 @@ function App() {
    * @returns {void}
    */
   const handleCloseDetails = () => {
+    console.log('❌ [App] Closing details modal');
     setIsDetailsOpen(false);
     setSelectedRestaurant(null);
   };

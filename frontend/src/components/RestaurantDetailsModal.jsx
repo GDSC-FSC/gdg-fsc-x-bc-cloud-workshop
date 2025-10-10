@@ -149,15 +149,21 @@ const InspectionCard = ({ inspection, index }) => {
               </Box>
               <Box>
                 <Text fontWeight="bold" fontSize="md" color="gray.900">
-                  {new Date(inspection.inspection_date).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
-                  })}
+                  {(() => {
+                    const dateStr = inspection.inspectionDate || inspection.inspection_date;
+                    if (!dateStr) return 'Date not available';
+                    const date = new Date(dateStr);
+                    if (isNaN(date.getTime())) return 'Invalid Date';
+                    return date.toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric'
+                    });
+                  })()}
                 </Text>
-                {inspection.inspection_type && (
+                {(inspection.inspectionType || inspection.inspection_type) && (
                   <Text fontSize="xs" color="gray.500" textTransform="capitalize">
-                    {inspection.inspection_type.replace(/_/g, ' ').toLowerCase()}
+                    {(inspection.inspectionType || inspection.inspection_type).replace(/_/g, ' ').toLowerCase()}
                   </Text>
                 )}
               </Box>
@@ -225,42 +231,42 @@ const InspectionCard = ({ inspection, index }) => {
           </Box>
         )}
 
-        {inspection.violation_code && (
+        {(inspection.violationCode || inspection.violation_code) && (
           <Box 
             p={4} 
-            bg={inspection.critical_flag === 'CRITICAL' ? 'red.50' : 'gray.50'}
+            bg={(inspection.criticalFlag || inspection.critical_flag) === 'Critical' ? 'red.50' : 'gray.50'}
             borderRadius="lg" 
             borderLeftWidth="4px" 
-            borderLeftColor={inspection.critical_flag === 'CRITICAL' ? 'red.500' : 'gray.400'}
+            borderLeftColor={(inspection.criticalFlag || inspection.critical_flag) === 'Critical' ? 'red.500' : 'gray.400'}
             borderWidth="1px"
-            borderColor={inspection.critical_flag === 'CRITICAL' ? 'red.200' : 'gray.200'}
+            borderColor={(inspection.criticalFlag || inspection.critical_flag) === 'Critical' ? 'red.200' : 'gray.200'}
           >
             <HStack gap={2} mb={3} wrap="wrap">
               <Badge
-                colorScheme={inspection.critical_flag === 'CRITICAL' ? 'red' : 'gray'}
+                colorScheme={(inspection.criticalFlag || inspection.critical_flag) === 'Critical' ? 'red' : 'gray'}
                 size="sm"
                 variant="solid"
                 fontWeight="bold"
                 px={2}
                 py={1}
               >
-                Code {inspection.violation_code}
+                Code {inspection.violationCode || inspection.violation_code}
               </Badge>
-              {inspection.critical_flag && (
+              {(inspection.criticalFlag || inspection.critical_flag) && (
                 <Badge
-                  colorScheme={inspection.critical_flag === 'CRITICAL' ? 'red' : 'gray'}
+                  colorScheme={(inspection.criticalFlag || inspection.critical_flag) === 'Critical' ? 'red' : 'gray'}
                   size="sm"
                   px={2}
                   py={1}
                   fontWeight="semibold"
                 >
-                  {inspection.critical_flag === 'CRITICAL' ? '⚠️ CRITICAL' : inspection.critical_flag.replace(/_/g, ' ')}
+                  {(inspection.criticalFlag || inspection.critical_flag) === 'Critical' ? '⚠️ CRITICAL' : (inspection.criticalFlag || inspection.critical_flag).replace(/_/g, ' ')}
                 </Badge>
               )}
             </HStack>
-            {inspection.violation_description && (
+            {(inspection.violationDescription || inspection.violation_description) && (
               <Text fontSize="sm" color="gray.800" lineHeight="tall">
-                {inspection.violation_description}
+                {inspection.violationDescription || inspection.violation_description}
               </Text>
             )}
           </Box>

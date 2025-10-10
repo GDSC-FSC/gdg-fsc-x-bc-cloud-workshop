@@ -6,6 +6,7 @@ A modern React frontend built with Vite, using Bun for fast builds, Chakra UI fo
 
 - **[Quick Reference](./QUICK_REFERENCE.md)** - Quick setup and usage guide
 - **[Google Maps Setup](./GOOGLE_MAPS_SETUP.md)** - Complete Maps integration guide
+- **[JSDoc Documentation](./JSDOC_DOCUMENTATION.md)** - Code documentation and API reference
 - **[Design Improvements](./DESIGN_IMPROVEMENTS.md)** - All UI/UX enhancements
 - **[Visual Changelog](./VISUAL_CHANGELOG.md)** - Before/after comparison
 

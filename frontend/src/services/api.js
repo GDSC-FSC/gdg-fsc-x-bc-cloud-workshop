@@ -18,9 +18,15 @@ const apiClient = axios.create({
   timeout: 30000, // 30 second timeout
 });
 
-// Request interceptor for API key (if needed in future)
+// Request interceptor for logging and API key (if needed in future)
 apiClient.interceptors.request.use(
   (config) => {
+    const timestamp = new Date().toISOString();
+    console.log(`[${timestamp}] 📤 API Request: ${config.method.toUpperCase()} ${config.url}`, {
+      baseURL: config.baseURL,
+      params: config.params,
+      data: config.data,
+    });
     // Could add API key here if enabled
     // const apiKey = localStorage.getItem('apiKey');
     // if (apiKey) {
@@ -29,27 +35,51 @@ apiClient.interceptors.request.use(
     return config;
   },
   (error) => {
+    console.error('❌ Request interceptor error:', error);
     return Promise.reject(error);
   }
 );
 
-// Response interceptor for error handling
+// Response interceptor for logging and error handling
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const timestamp = new Date().toISOString();
+    console.log(`[${timestamp}] 📥 API Response: ${response.config.method.toUpperCase()} ${response.config.url}`, {
+      status: response.status,
+      statusText: response.statusText,
+      dataType: Array.isArray(response.data) ? 'array' : typeof response.data,
+      dataLength: Array.isArray(response.data) ? response.data.length : undefined,
+      data: response.data,
+    });
+    return response;
+  },
   (error) => {
+    const timestamp = new Date().toISOString();
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
       const errorMessage = error.response.data?.message || error.response.data?.error || 'An error occurred';
-      console.error('API Error:', errorMessage);
+      console.error(`[${timestamp}] ❌ API Error Response:`, {
+        url: error.config?.url,
+        method: error.config?.method,
+        status: error.response.status,
+        statusText: error.response.statusText,
+        message: errorMessage,
+        data: error.response.data,
+      });
       return Promise.reject(new Error(errorMessage));
     } else if (error.request) {
       // The request was made but no response was received
-      console.error('No response from server');
+      console.error(`[${timestamp}] ❌ No response from server:`, {
+        url: error.config?.url,
+        method: error.config?.method,
+        baseURL: error.config?.baseURL,
+        timeout: error.config?.timeout,
+      });
       return Promise.reject(new Error('Unable to connect to server. Please check if the API is running.'));
     } else {
       // Something happened in setting up the request that triggered an Error
-      console.error('Error:', error.message);
+      console.error(`[${timestamp}] ❌ Request setup error:`, error.message);
       return Promise.reject(error);
     }
   }
@@ -64,7 +94,9 @@ export const restaurantApi = {
    * @returns {Promise<{status: string, timestamp: string}>}
    */
   async healthCheck() {
+    console.log('🏥 Checking API health...');
     const response = await apiClient.get('/health');
+    console.log('✅ API health check passed:', response.data);
     return response.data;
   },
 
@@ -78,7 +110,9 @@ export const restaurantApi = {
    * @returns {Promise<{count: number, results: Array}>}
    */
   async searchRestaurants(params) {
+    console.log('🔍 Searching restaurants with params:', params);
     const response = await apiClient.post('/query', params);
+    console.log(`✅ Search complete: Found ${response.data.count || response.data.results?.length || 0} restaurants`);
     return response.data;
   },
 
@@ -90,25 +124,35 @@ export const restaurantApi = {
    * @returns {Promise<{restaurantName: string, borough: string, inspections: Array, totalInspections: number}>}
    */
   async getRestaurantDetails(params) {
+    console.log('📋 Fetching restaurant details for:', params);
     const response = await apiClient.post('/details', params);
+    console.log(`✅ Details loaded: ${response.data.restaurantName} - ${response.data.totalInspections} inspections`);
     return response.data;
   },
 
   /**
    * Get list of all boroughs in the dataset
-   * @returns {Promise<{boroughs: Array<string>}>}
+   * @returns {Promise<Array<string>>} Array of borough names
+   * @example
+   * // Returns: ["Bronx", "Brooklyn", "Manhattan", "Queens", "Staten Island"]
    */
   async getBoroughs() {
+    console.log('🗺️ Fetching boroughs list...');
     const response = await apiClient.get('/boroughs');
+    console.log(`✅ Boroughs loaded: ${response.data.length} items`, response.data);
     return response.data;
   },
 
   /**
    * Get list of all cuisine types in the dataset
-   * @returns {Promise<{cuisines: Array<string>}>}
+   * @returns {Promise<Array<string>>} Array of cuisine type names
+   * @example
+   * // Returns: ["American", "Chinese", "Italian", "Mexican", ...]
    */
   async getCuisines() {
+    console.log('🍽️ Fetching cuisines list...');
     const response = await apiClient.get('/cuisines');
+    console.log(`✅ Cuisines loaded: ${response.data.length} items`, response.data.slice(0, 10), '...');
     return response.data;
   },
 };

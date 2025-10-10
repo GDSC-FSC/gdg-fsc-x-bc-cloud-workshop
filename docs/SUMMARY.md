@@ -111,6 +111,13 @@
   - Configuration
   - Cost considerations
 
+- [JSDoc Documentation](frontend/JSDOC_DOCUMENTATION.md)
+  - Complete code documentation
+  - Component API reference
+  - Function documentation
+  - Type definitions
+  - Usage examples
+
 - [Design Improvements](frontend/DESIGN_IMPROVEMENTS.md)
   - UI/UX enhancements
   - New components
