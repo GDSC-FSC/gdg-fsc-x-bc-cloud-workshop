@@ -114,12 +114,24 @@ This application is built for a diverse audience:
 
 This application is packed with features across its backend, frontend, and infrastructure, all designed for a robust and user-friendly experience.
 
-### 🚀 Core Application Features
+### �️ Recent Fixes & Improvements
+
+*   **Inspection History Reliability**: Fixed backend NullPointerException and added null-safety to ensure inspection history loads for all restaurants.
+*   **Dropdown Filters**: Borough and grade filters now work correctly with case-insensitive matching and robust validation.
+*   **Date Display**: Inspection dates now display correctly, supporting both camelCase and snake_case formats.
+*   **Comprehensive Logging**: Enhanced logging throughout frontend and backend for easier debugging and monitoring.
+*   **Build Stability**: Resolved Lombok annotation processing and build lock issues for smoother development.
+*   **API Error Handling**: Improved error responses and defensive programming for all endpoints.
+
+
+### �🚀 Core Application Features
 
 *   ✅ **Comprehensive Search**: Effortlessly search for restaurants across NYC.
 *   ✅ **Advanced Filtering**: Filter results by borough, cuisine type, and health grade.
 *   ✅ **Detailed Inspection History**: Access a full timeline of inspections for any restaurant, including specific violations.
 *   ✅ **Data-driven Insights**: Understand health inspection trends and critical flags.
+
+*   🐞 **Bug Fixes**: See [docs/api/RESTAURANT_DETAILS_FIX.md](docs/api/RESTAURANT_DETAILS_FIX.md) and [docs/CURRENT_ISSUES.md](docs/CURRENT_ISSUES.md) for details on recent bug fixes and known issues.
 
 <p align="right"><a href="#-table-of-contents">Back to top ⬆️</a></p>
 
