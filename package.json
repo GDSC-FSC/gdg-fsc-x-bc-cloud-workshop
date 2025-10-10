@@ -22,10 +22,19 @@
     "test:api": "bash scripts/test-api.sh",
     "install:all": "bash scripts/install.sh",
     "start:all": "concurrently -n \"api,frontend\" -c \"blue,green\" \"npm run api:dev\" \"npm run frontend:dev\"",
+    "docker:deploy": "bash scripts/deploy-docker.sh",
+    "docker:clean": "bash scripts/docker-clean.sh",
     "docker:up": "docker-compose up -d",
+    "docker:up:build": "docker-compose up -d --build",
     "docker:down": "docker-compose down",
+    "docker:down:volumes": "docker-compose down -v",
     "docker:logs": "docker-compose logs -f",
-    "docker:restart": "docker-compose restart"
+    "docker:restart": "docker-compose restart",
+    "docker:ps": "docker-compose ps",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up -d",
+    "cloud:deploy": "bash scripts/deploy-all.sh",
+    "cloud:deploy:api": "bash scripts/deploy-api.sh",
+    "cloud:deploy:frontend": "bash scripts/deploy-frontend.sh"
   },
   "devDependencies": {
     "@types/bun": "latest",

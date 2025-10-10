@@ -1,0 +1,38 @@
+# Docker Compose for Development
+# Use this for development with hot-reload support
+# Usage: docker-compose -f docker-compose.dev.yml up
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database only
+  postgres:
+    image: postgres:16-alpine
+    container_name: gdg-postgres-dev
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-brooklyn}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_DB: ${DB_NAME:-postgres}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - pgdata_dev:/var/lib/postgresql/data
+    networks:
+      - pgnetwork
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+networks:
+  pgnetwork:
+    name: pgnetwork-dev
+    driver: bridge
+
+volumes:
+  pgdata_dev:
+    name: pgdata_dev
