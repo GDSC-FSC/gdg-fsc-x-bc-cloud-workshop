@@ -49,6 +49,23 @@ Contains concrete implementations of service interfaces, following the interface
 
 Contains web-layer components like filters, exception handlers, and configurations.
 
+### ApiKeyAuthenticationFilter.java
+- Servlet filter for optional API key authentication
+- Runs with `@Order(1)` to execute before other filters
+- Validates `X-API-Key` header against configured keys
+- Bypasses authentication for public endpoints (health checks)
+- Returns 401 Unauthorized for missing or invalid API keys
+- Configurable via `application.properties`:
+  - `security.api-key.enabled=true/false`
+  - `security.api-key.keys=key1,key2,key3`
+- Logs all authentication attempts with IP addresses
+
+**Benefits:**
+- Simple API key authentication without complex OAuth setup
+- Easy to enable/disable per environment
+- Supports multiple keys for different clients/services
+- Detailed audit trail of authentication events
+
 ### RequestLoggingFilter.java
 - Servlet filter that logs all incoming requests and outgoing responses
 - Tracks request duration for performance monitoring

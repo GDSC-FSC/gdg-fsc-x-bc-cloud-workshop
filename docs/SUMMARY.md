@@ -86,6 +86,7 @@
 
 ## Frontend
 
+### Core Documentation
 - [Frontend Guide](frontend/README.md)
   - React + Vite setup
   - Development workflow
@@ -96,6 +97,30 @@
   - Component structure
   - API integration
   - Troubleshooting
+
+### Design & Features
+- [Quick Reference](frontend/QUICK_REFERENCE.md)
+  - Quick setup guide
+  - Features overview
+  - Common tasks
+  - Troubleshooting tips
+
+- [Google Maps Integration](frontend/GOOGLE_MAPS_SETUP.md)
+  - API key setup
+  - Map features
+  - Configuration
+  - Cost considerations
+
+- [Design Improvements](frontend/DESIGN_IMPROVEMENTS.md)
+  - UI/UX enhancements
+  - New components
+  - Color scheme
+  - Animation system
+
+- [Visual Changelog](frontend/VISUAL_CHANGELOG.md)
+  - Before/after comparison
+  - Component changes
+  - Metrics and stats
 
 ## Development
 

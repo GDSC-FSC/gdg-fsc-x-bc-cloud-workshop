@@ -55,6 +55,7 @@ api/src/main/java/com/example/api/
 │   └── JsonUtils.java                     # JSON serialization utilities
 │
 └── web/                                   # Web layer components
+    ├── ApiKeyAuthenticationFilter.java    # API key authentication filter (@Order(1))
     ├── ErrorResponse.java                 # Standardized error response DTO
     ├── GlobalRestExceptionHandler.java    # Global exception handler
     ├── RequestLoggingFilter.java          # Request/response logging filter
@@ -98,6 +99,11 @@ Utility classes and helper functions.
 
 ### 🌐 web/
 Web layer components: filters, exception handlers, and configurations.
+- **ApiKeyAuthenticationFilter**: Optional API key authentication for securing endpoints
+- **ErrorResponse**: Standardized error response structure
+- **GlobalRestExceptionHandler**: Centralized exception handling
+- **RequestLoggingFilter**: Request/response audit logging
+- **WebConfiguration**: Spring MVC configuration
 
 ## Key Design Patterns
 
@@ -143,11 +149,13 @@ web/ErrorResponse.java
 ```
 1. Client sends HTTP request
         ↓
-2. RequestLoggingFilter logs request
+2. ApiKeyAuthenticationFilter validates API key (if enabled, @Order(1))
         ↓
-3. Spring Security (CORS check)
+3. RequestLoggingFilter logs request
         ↓
-4. RestaurantController receives request
+4. Spring Security (CORS check)
+        ↓
+5. RestaurantController receives request
         ↓
 5. Validates with @Valid annotation
         ↓
@@ -230,9 +238,9 @@ graph TD
 - Responses: 2 files
 - Services: 2 files
 - Utils: 1 file
-- Web: 4 files
+- Web: 5 files
 
-**Total: 23 Java files**
+**Total: 24 Java files**
 
 ## Technologies Used
 

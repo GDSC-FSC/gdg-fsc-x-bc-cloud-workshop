@@ -110,14 +110,53 @@ security.api-key.keys=key1,key2,key3
 ```
 
 #### Features:
-- Header-based authentication (X-API-Key)
-- Multiple valid keys supported
-- Public endpoints exempted (/health, /actuator/health)
-- Detailed logging of authentication attempts
+- **Header-based authentication**: Requires `X-API-Key` header
+- **Multiple valid keys**: Comma-separated keys for different clients
+- **Public endpoints exempted**: `/health` and `/actuator/health` don't require keys
+- **Detailed logging**: Logs all authentication attempts with IP addresses
+- **Early filter order**: Runs as `@Order(1)` before other filters
+- **Graceful degradation**: When disabled, all requests pass through
+
+#### How It Works:
+1. **Initialization**: On startup, parses comma-separated API keys into a Set
+2. **Request filtering**: Intercepts each HTTP request
+3. **Public endpoint check**: Bypasses authentication for health endpoints
+4. **Header validation**: Extracts and validates `X-API-Key` header
+5. **Response handling**: Returns 401 with JSON error for invalid/missing keys
 
 #### Usage:
 ```bash
+# With API key
 curl -H "X-API-Key: your-api-key" http://localhost:8080/api/restaurants/query
+
+# Without API key (if required, returns 401)
+curl http://localhost:8080/api/restaurants/query
+# Response: {"error": "Unauthorized", "message": "API key is required", "hint": "Include X-API-Key header in your request"}
+```
+
+#### Error Responses:
+```json
+// Missing API key
+{
+  "error": "Unauthorized",
+  "message": "API key is required",
+  "hint": "Include X-API-Key header in your request"
+}
+
+// Invalid API key
+{
+  "error": "Unauthorized", 
+  "message": "Invalid API key",
+  "hint": "Include X-API-Key header in your request"
+}
+```
+
+#### Security Logging:
+```
+INFO: API Key authentication enabled with 3 valid keys
+WARN: Missing API key for request: /api/restaurants/query from 192.168.1.100
+WARN: Invalid API key attempt for request: /api/restaurants/query from 192.168.1.100
+DEBUG: Valid API key for request: /api/restaurants/query
 ```
 
 ### 6. SQL Injection Prevention

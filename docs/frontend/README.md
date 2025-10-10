@@ -1,6 +1,22 @@
-# Frontend - React + Vite
+# Frontend - React + Vite 🍕
 
-A modern React frontend built with Vite, using Bun for fast builds and Chakra UI for components.
+A modern React frontend built with Vite, using Bun for fast builds, Chakra UI for components, and **Google Maps integration** for enhanced data visualization.
+
+## 📚 Additional Documentation
+
+- **[Quick Reference](./QUICK_REFERENCE.md)** - Quick setup and usage guide
+- **[Google Maps Setup](./GOOGLE_MAPS_SETUP.md)** - Complete Maps integration guide
+- **[Design Improvements](./DESIGN_IMPROVEMENTS.md)** - All UI/UX enhancements
+- **[Visual Changelog](./VISUAL_CHANGELOG.md)** - Before/after comparison
+
+## ✨ New Features
+
+- 🗺️ **Interactive Map View** - See restaurants on Google Maps with color-coded markers
+- 🎨 **Modern Card Design** - Enhanced visual hierarchy with gradients and icons
+- 📍 **Location Integration** - Static maps, street view, and direct links to Google Maps
+- 🔄 **View Toggle** - Switch between list and map views instantly
+- ⚡ **Smooth Animations** - Professional hover effects and transitions
+- 🎯 **Better Information Display** - Color-coded scores and enhanced inspection history
 
 ## Tech Stack
 
@@ -8,9 +24,9 @@ A modern React frontend built with Vite, using Bun for fast builds and Chakra UI
 - **Vite** - Build tool and dev server
 - **Bun** - Fast JavaScript runtime for development
 - **Chakra UI** - Component library
-- **Tailwind CSS** - Utility-first CSS
+- **Google Maps** - Map integration (@vis.gl/react-google-maps)
 - **Framer Motion** - Animation library
-- **Google Maps** - Map integration
+- **React Icons** - Icon library
 - **Axios** - HTTP client
 
 ## Prerequisites
@@ -39,7 +55,10 @@ Edit `.env` and configure:
 
 ```env
 VITE_API_URL=http://localhost:8080
+VITE_GOOGLE_MAPS_API_KEY=your_api_key_here
 ```
+
+**Note**: See [Google Maps Setup Guide](./GOOGLE_MAPS_SETUP.md) for detailed instructions on obtaining an API key.
 
 ### 3. Run Development Server
 

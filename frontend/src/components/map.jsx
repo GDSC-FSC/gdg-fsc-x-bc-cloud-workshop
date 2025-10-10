@@ -129,6 +129,7 @@ export const GoogleMaps = memo(
 		minZoom = 4,
 		maxZoom = 18,
 		defaultZoom = 4,
+		onViewDetails,
 	}) => {
 		const { toast } = useToast();
 		const mapContainerRef = useRef(null);
@@ -264,6 +265,7 @@ export const GoogleMaps = memo(
 											mapZoom={mapZoom}
 											statusFilter={statusFilter}
 											bounds={bounds}
+											onViewDetails={onViewDetails}
 										/>
 									</Map>
 								</APIProvider>
@@ -284,6 +286,7 @@ GoogleMaps.propTypes = {
 	minZoom: PropTypes.number,
 	maxZoom: PropTypes.number,
 	defaultZoom: PropTypes.number,
+	onViewDetails: PropTypes.func,
 };
 
 GoogleMaps.displayName = "GoogleMaps";
@@ -291,7 +294,7 @@ GoogleMaps.displayName = "GoogleMaps";
 /**
  * Component that handles the rendering and management of map markers and clustering
  */
-const Markers = memo(({ locations, mapZoom, statusFilter, bounds }) => {
+const Markers = memo(({ locations, mapZoom, statusFilter, bounds, onViewDetails }) => {
 	const map = useMap();
 	const [activeMarker, setActiveMarker] = useState(null);
 	const clusterer = useRef(null);
@@ -445,6 +448,7 @@ const Markers = memo(({ locations, mapZoom, statusFilter, bounds }) => {
 						location={filteredLocations.find(
 							(location) => location.id === activeMarker,
 						)}
+						onViewDetails={onViewDetails}
 					/>
 				</InfoWindow>
 			)}
@@ -457,6 +461,7 @@ Markers.propTypes = {
 	mapZoom: PropTypes.number.isRequired,
 	statusFilter: PropTypes.string.isRequired,
 	bounds: BoundsPropType.isRequired,
+	onViewDetails: PropTypes.func,
 };
 
 Markers.displayName = "Markers";
@@ -464,7 +469,7 @@ Markers.displayName = "Markers";
 /**
  * Component that displays detailed information about a location in an info window
  */
-const LocationInfo = memo(({ location }) => (
+const LocationInfo = memo(({ location, onViewDetails }) => (
 	<motion.div
 		initial={{ opacity: 0, y: -20 }}
 		animate={{ opacity: 1, y: 0 }}
@@ -475,7 +480,7 @@ const LocationInfo = memo(({ location }) => (
 			<Badge
 				className={`${MARKER_COLORS[location.status].badge} text-sm px-3 py-1`}
 			>
-				{location.status}
+				{location.status === 'Active' ? 'Grade A' : location.status === 'Special' ? 'Grade B' : location.status}
 			</Badge>
 			{location.establishedDate && (
 				<span className="text-gray-500 text-sm">
@@ -509,30 +514,43 @@ const LocationInfo = memo(({ location }) => (
 
 		{location.category && (
 			<p className="text-sm mb-1">
-				<strong>Category:</strong> {location.category}
+				<strong>Info:</strong> {location.category}
 			</p>
 		)}
 
 		{location.notes && (
-			<p className="text-sm mt-2 italic text-gray-600">{location.notes}</p>
+			<p className="text-sm mt-2 italic text-gray-600 line-clamp-2">{location.notes}</p>
 		)}
 
-		<Button
-			className="mt-4 w-full"
-			onClick={() =>
-				window.open(
-					`https://www.google.com/maps/search/?api=1&query=${location.coordinates[0]},${location.coordinates[1]}`,
-					"_blank",
-				)
-			}
-		>
-			View on Google Maps
-		</Button>
+		<div className="flex gap-2 mt-4">
+			{location._originalData && onViewDetails && (
+				<Button
+					className="flex-1"
+					variant="solid"
+					onClick={() => onViewDetails(location._originalData)}
+				>
+					View Details
+				</Button>
+			)}
+			<Button
+				className={location._originalData ? 'flex-1' : 'w-full'}
+				variant={location._originalData ? "outline" : "solid"}
+				onClick={() =>
+					window.open(
+						`https://www.google.com/maps/search/?api=1&query=${location.coordinates[0]},${location.coordinates[1]}`,
+						"_blank",
+					)
+				}
+			>
+				Google Maps
+			</Button>
+		</div>
 	</motion.div>
 ));
 
 LocationInfo.propTypes = {
 	location: LocationInfoPropType.isRequired,
+	onViewDetails: PropTypes.func,
 };
 
 LocationInfo.displayName = "LocationInfo";

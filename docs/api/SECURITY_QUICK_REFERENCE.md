@@ -87,13 +87,15 @@ api/src/main/
 │   ├── util/
 │   │   └── InputValidator.java             # Input validation
 │   └── web/
-│       ├── ApiKeyAuthenticationFilter.java # API key auth
+│       ├── ApiKeyAuthenticationFilter.java # API key auth (@Order(1))
 │       ├── RateLimitingFilter.java         # Rate limiting
 │       ├── SecurityHeadersFilter.java      # HTTP headers
 │       ├── GlobalRestExceptionHandler.java # Error handling
 │       └── RequestLoggingFilter.java       # Audit logging
 └── resources/
     └── application.properties              # Configuration
+
+Note: ApiKeyAuthenticationFilter runs with @Order(1) to execute first
 ```
 
 ## 🧪 Testing Security

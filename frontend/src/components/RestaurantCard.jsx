@@ -4,10 +4,11 @@
  */
 
 import PropTypes from 'prop-types';
-import { Box, Stack, Text, HStack, VStack } from '@chakra-ui/react';
+import { Box, Stack, Text, HStack, VStack, Group } from '@chakra-ui/react';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
+import { FaUtensils, FaMapMarkerAlt, FaPhone, FaCalendarAlt, FaExclamationTriangle, FaCheckCircle } from 'react-icons/fa';
 
 const getGradeBadgeColor = (grade) => {
   switch (grade?.toUpperCase()) {
@@ -27,8 +28,31 @@ const getGradeBadgeColor = (grade) => {
   }
 };
 
+const getGradeBackground = (grade) => {
+  switch (grade?.toUpperCase()) {
+    case 'A':
+      return 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+    case 'B':
+      return 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
+    case 'C':
+      return 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)';
+    case 'P':
+    case 'Z':
+      return 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+    default:
+      return 'linear-gradient(135deg, #9ca3af 0%, #6b7280 100%)';
+  }
+};
+
 const getCriticalBadgeColor = (criticalFlag) => {
   return criticalFlag === 'CRITICAL' ? 'red' : 'gray';
+};
+
+const getScoreColor = (score) => {
+  if (score === undefined || score === null) return 'gray.600';
+  if (score <= 13) return 'green.600';
+  if (score <= 27) return 'blue.600';
+  return 'orange.600';
 };
 
 const RestaurantCard = ({ restaurant, onViewDetails }) => {
@@ -53,69 +77,142 @@ const RestaurantCard = ({ restaurant, onViewDetails }) => {
       size="sm"
       variant="outline"
       bg="white"
-      _hover={{ boxShadow: 'lg', transform: 'translateY(-2px)' }}
-      transition="all 0.2s"
+      _hover={{ 
+        boxShadow: '0 10px 40px -10px rgba(0, 0, 0, 0.15)',
+        transform: 'translateY(-4px)',
+        borderColor: 'blue.200'
+      }}
+      transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+      cursor="pointer"
+      onClick={() => onViewDetails(restaurant)}
+      position="relative"
+      overflow="hidden"
     >
-      <CardContent p={5}>
-        <Stack gap={3}>
+      {/* Grade Badge Ribbon */}
+      {grade && (
+        <Box
+          position="absolute"
+          top={3}
+          right={3}
+          zIndex={1}
+        >
+          <Box
+            background={getGradeBackground(grade)}
+            color="white"
+            fontSize="2xl"
+            fontWeight="bold"
+            px={4}
+            py={2}
+            borderRadius="lg"
+            boxShadow="0 4px 12px rgba(0, 0, 0, 0.15)"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            minW="50px"
+            minH="50px"
+          >
+            {grade}
+          </Box>
+        </Box>
+      )}
+
+      <CardContent p={5} pt={grade ? 7 : 5}>
+        <Stack gap={4}>
           {/* Header */}
-          <HStack justify="space-between" align="start">
-            <VStack align="start" gap={1}>
-              <Text fontSize="xl" fontWeight="bold" lineHeight="tight">
+          <Box pr={grade ? 16 : 0}>
+            <HStack gap={2} mb={1}>
+              <FaUtensils color="#3b82f6" />
+              <Text fontSize="xl" fontWeight="bold" lineHeight="tight" color="gray.800">
                 {dba || 'Unknown Restaurant'}
               </Text>
-              <Text fontSize="sm" color="gray.600">
-                {cuisine_description || 'Unknown Cuisine'}
-              </Text>
-            </VStack>
-            {grade && (
-              <Badge colorScheme={getGradeBadgeColor(grade)} fontSize="lg" px={3} py={1}>
-                {grade}
-              </Badge>
-            )}
-          </HStack>
-
-          {/* Location */}
-          <VStack align="start" gap={1}>
-            <Text fontSize="sm" color="gray.700">
-              📍 {building && street ? `${building} ${street}` : 'Address not available'}
-            </Text>
-            <HStack gap={2} fontSize="sm" color="gray.600">
-              <Text>{boro || 'Unknown'}</Text>
-              {zipcode && <Text>• {zipcode}</Text>}
-              {phone && <Text>• {phone}</Text>}
             </HStack>
-          </VStack>
+            <Text fontSize="sm" color="gray.600" fontWeight="medium">
+              {cuisine_description || 'Unknown Cuisine'}
+            </Text>
+          </Box>
+
+          {/* Location Section */}
+          <Box 
+            p={3} 
+            bg="gradient-to-r from-gray-50 to-blue-50" 
+            borderRadius="md"
+            borderLeftWidth="3px"
+            borderLeftColor="blue.400"
+          >
+            <VStack align="start" gap={2}>
+              <HStack gap={2}>
+                <FaMapMarkerAlt color="#3b82f6" size={14} />
+                <Text fontSize="sm" color="gray.700" fontWeight="medium">
+                  {building && street ? `${building} ${street}` : 'Address not available'}
+                </Text>
+              </HStack>
+              <Group gap={3} fontSize="sm" color="gray.600">
+                <Badge colorScheme="blue" variant="subtle" size="sm">
+                  {boro || 'Unknown Borough'}
+                </Badge>
+                {zipcode && (
+                  <Text fontSize="xs" fontWeight="medium">{zipcode}</Text>
+                )}
+                {phone && (
+                  <HStack gap={1}>
+                    <FaPhone size={10} />
+                    <Text fontSize="xs">{phone}</Text>
+                  </HStack>
+                )}
+              </Group>
+            </VStack>
+          </Box>
 
           {/* Inspection Info */}
           {inspection_date && (
-            <Box p={3} bg="gray.50" borderRadius="md">
-              <VStack align="start" gap={2}>
+            <Box 
+              p={3} 
+              bg="gray.50" 
+              borderRadius="md"
+              borderWidth="1px"
+              borderColor="gray.200"
+            >
+              <VStack align="start" gap={3}>
                 <HStack justify="space-between" width="100%">
-                  <Text fontSize="sm" fontWeight="medium">
-                    Last Inspection: {new Date(inspection_date).toLocaleDateString()}
-                  </Text>
-                  {score !== undefined && score !== null && (
-                    <Text fontSize="sm" fontWeight="bold" color="blue.600">
-                      Score: {score}
+                  <HStack gap={2}>
+                    <FaCalendarAlt color="#6b7280" size={14} />
+                    <Text fontSize="sm" fontWeight="semibold" color="gray.700">
+                      {new Date(inspection_date).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                      })}
                     </Text>
+                  </HStack>
+                  {score !== undefined && score !== null && (
+                    <HStack gap={1}>
+                      {score <= 13 ? <FaCheckCircle color="#10b981" size={14} /> : <FaExclamationTriangle color="#f97316" size={14} />}
+                      <Text fontSize="sm" fontWeight="bold" color={getScoreColor(score)}>
+                        Score: {score}
+                      </Text>
+                    </HStack>
                   )}
                 </HStack>
 
                 {critical_flag && (
-                  <Badge colorScheme={getCriticalBadgeColor(critical_flag)} size="sm">
+                  <Badge 
+                    colorScheme={getCriticalBadgeColor(critical_flag)} 
+                    size="sm"
+                    variant={critical_flag === 'CRITICAL' ? 'solid' : 'subtle'}
+                  >
+                    {critical_flag === 'CRITICAL' ? '⚠️ ' : ''}
                     {critical_flag.replace(/_/g, ' ')}
                   </Badge>
                 )}
 
                 {violation_description && (
-                  <Text fontSize="xs" color="gray.600" noOfLines={2}>
+                  <Text fontSize="xs" color="gray.600" lineClamp={2} lineHeight="tall">
                     {violation_description}
                   </Text>
                 )}
 
                 {action && (
-                  <Text fontSize="xs" color="gray.500" fontStyle="italic">
+                  <Text fontSize="xs" color="gray.500" fontStyle="italic" lineClamp={1}>
                     {action}
                   </Text>
                 )}
@@ -126,13 +223,20 @@ const RestaurantCard = ({ restaurant, onViewDetails }) => {
           {/* View Details Button */}
           <Button
             size="sm"
-            variant="outline"
             colorScheme="blue"
-            onClick={() => onViewDetails(restaurant)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onViewDetails(restaurant);
+            }}
             width="100%"
             mt={2}
+            _hover={{
+              transform: 'scale(1.02)',
+              boxShadow: 'md'
+            }}
+            transition="all 0.2s"
           >
-            View Full Details
+            View Full Details →
           </Button>
         </Stack>
       </CardContent>

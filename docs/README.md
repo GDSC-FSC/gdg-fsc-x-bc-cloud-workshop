@@ -72,10 +72,11 @@ This workshop demonstrates a full-stack cloud application using Docker, PostgreS
 - **Gradle** - Build tool
 
 ### Frontend
-- **React** - UI framework
+- **React 19** - UI framework
 - **Vite** - Build tool
-- **TailwindCSS** - Styling
 - **Chakra UI** - Component library
+- **Google Maps** - Interactive maps (@vis.gl/react-google-maps)
+- **Framer Motion** - Animations
 
 ### Infrastructure
 - **Docker** - Containerization
@@ -101,6 +102,16 @@ This workshop demonstrates a full-stack cloud application using Docker, PostgreS
 ✅ 200,000+ restaurant inspection records  
 ✅ Optimized indexes for fast queries  
 ✅ Docker-based deployment  
+
+### Frontend Features
+✅ Interactive Google Maps integration  
+✅ List/Map view toggle  
+✅ Color-coded restaurant markers  
+✅ Enhanced restaurant cards with gradients  
+✅ Static maps and street view  
+✅ Direct Google Maps links  
+✅ Smooth animations and transitions  
+✅ Modern responsive design  
 
 ## Resources
 

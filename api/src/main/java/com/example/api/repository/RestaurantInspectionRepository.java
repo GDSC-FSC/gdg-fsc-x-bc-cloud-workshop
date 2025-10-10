@@ -29,11 +29,11 @@ public interface RestaurantInspectionRepository
    */
   @Query(
       value =
-          "SELECT * FROM nyc_restaurant_inspections r WHERE "
+          "SELECT DISTINCT ON (r.camis, r.dba, r.boro, r.building, r.street) * FROM nyc_restaurant_inspections r WHERE "
               + "(CAST(:borough AS text) IS NULL OR r.boro = CAST(:borough AS text)) "
               + "AND (CAST(:cuisine AS text) IS NULL OR r.cuisine_description LIKE CONCAT('%', CAST(:cuisine AS text), '%')) "
               + "AND (CAST(:minGrade AS text) IS NULL OR r.grade IS NULL OR r.grade <= CAST(:minGrade AS text)) "
-              + "ORDER BY r.dba, r.inspection_date DESC",
+              + "ORDER BY r.camis, r.dba, r.boro, r.building, r.street, r.inspection_date DESC",
       nativeQuery = true)
   List<RestaurantInspection> searchRestaurants(
       @Param("borough") String borough,

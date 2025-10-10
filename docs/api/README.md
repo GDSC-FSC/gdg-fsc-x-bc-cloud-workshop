@@ -105,9 +105,10 @@ graph TB
     end
     
     subgraph "API Gateway Layer"
-        D[Rate Limiting]
-        E[API Key Auth]
-        F[CORS Filter]
+        D[API Key Auth Filter]
+        E[Rate Limiting Filter]
+        F[Security Headers]
+        G[CORS Filter]
     end
     
     subgraph "Application Layer"
@@ -135,22 +136,24 @@ graph TB
     D --> E
     E --> F
     F --> G
+    G --> H[RestaurantController]
     
-    G --> H
-    H --> I
-    I --> J
-    J --> K
-    K --> L
+    H --> I[Input Validation]
+    I --> J[RestaurantService]
+    J --> K[JPA Repository]
+    K --> L[HikariCP Pool]
+    L --> M[(PostgreSQL 18)]
     
-    M -.-> G
-    N -.-> G
-    O -.-> D
+    N[Request Logging] -.-> H
+    O[Exception Handler] -.-> H
+    P[Security Headers] -.-> D
     
     style D fill:#ff6b6b
     style E fill:#ff6b6b
     style F fill:#ff6b6b
-    style I fill:#4ecdc4
-    style L fill:#45b7d1
+    style G fill:#ff6b6b
+    style J fill:#4ecdc4
+    style M fill:#45b7d1
 ```
 
 ### Request Flow Sequence
@@ -204,7 +207,7 @@ sequenceDiagram
 | **Controller Layer** | HTTP request handling, routing | Spring MVC, REST |
 | **Service Layer** | Business logic, DTO mapping | Spring @Service, @Transactional |
 | **Repository Layer** | Data access, queries | Spring Data JPA, JPQL |
-| **Security Filters** | Authentication, rate limiting | Servlet Filters, Bucket4j |
+| **Security Filters** | API key auth, rate limiting, headers | Servlet Filters, @Order, Bucket4j |
 | **Validation Layer** | Input sanitization, Bean Validation | Jakarta Validation, Regex |
 | **Exception Handlers** | Global error handling | @RestControllerAdvice |
 
