@@ -67,7 +67,10 @@ public class RestaurantInspectionServiceImpl implements IRestaurantInspectionSer
             request.getRestaurantName(), request.getBorough());
 
     List<RestaurantDTO> inspectionDTOs =
-        inspections.stream().map(this::mapToDTO).collect(Collectors.toList());
+        inspections.stream()
+            .map(this::mapToDTO)
+            .filter(dto -> dto != null)
+            .collect(Collectors.toList());
 
     return RestaurantDetailsResponse.builder()
         .restaurantName(request.getRestaurantName())
@@ -99,6 +102,9 @@ public class RestaurantInspectionServiceImpl implements IRestaurantInspectionSer
    * @return the mapped DTO
    */
   private RestaurantDTO mapToDTO(RestaurantInspection entity) {
+    if (entity == null) {
+      return null;
+    }
     return RestaurantDTO.builder()
         .camis(entity.getCamis())
         .dba(entity.getDba())

@@ -15,7 +15,7 @@ import { Box, Input, Stack, Text } from '@chakra-ui/react';
 import { Button } from './ui/button';
 import { Field } from './ui/field';
 import { NativeSelect } from './ui/native-select';
-import restaurantApi from '../services/api';
+import { restaurantApi } from '../services/api';
 
 /**
  * Available NYC health inspection grades.

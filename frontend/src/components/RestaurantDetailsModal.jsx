@@ -35,7 +35,7 @@ import {
   DrawerCloseTrigger,
 } from './ui/drawer';
 import { FaMapMarkerAlt, FaPhone, FaExternalLinkAlt, FaCalendarAlt, FaClipboardCheck } from 'react-icons/fa';
-import restaurantApi from '../services/api';
+import { restaurantApi } from '../services/api';
 
 /**
  * Google Maps API key from environment variables.

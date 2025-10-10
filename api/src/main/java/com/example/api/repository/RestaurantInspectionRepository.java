@@ -43,8 +43,8 @@ public interface RestaurantInspectionRepository
   @Query(
       value =
           "SELECT * FROM nyc_restaurant_inspections r WHERE "
-              + "r.dba = CAST(:restaurantName AS text) AND "
-              + "(CAST(:borough AS text) IS NULL OR r.boro = CAST(:borough AS text)) "
+              + "LOWER(r.dba) = LOWER(CAST(:restaurantName AS text)) AND "
+              + "(CAST(:borough AS text) IS NULL OR LOWER(r.boro) = LOWER(CAST(:borough AS text))) "
               + "ORDER BY r.inspection_date DESC",
       nativeQuery = true)
   List<RestaurantInspection> findByRestaurantNameAndBorough(

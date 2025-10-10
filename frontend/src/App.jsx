@@ -17,7 +17,7 @@ import RestaurantMap from './components/RestaurantMap';
 import RestaurantDetailsModal from './components/RestaurantDetailsModal';
 import { EnvDebug } from './components/EnvDebug';
 import { Button } from './components/ui/button';
-import restaurantApi from './services/api';
+import { restaurantApi } from './services/api';
 
 /**
  * Main application component that orchestrates the NYC Restaurants Inspector.
