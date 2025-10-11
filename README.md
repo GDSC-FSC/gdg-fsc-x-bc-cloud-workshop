@@ -891,7 +891,7 @@ This project is made possible by:
 For questions, feedback, or support, please open an issue on the GitHub repository.
 
 *   **Project Repository**: [gdsc-fsc/gdg-fsc-x-bc-cloud-workshop](https://github.com/GDSC-FSC/gdg-fsc-x-bc-cloud-workshop)
-*   **GDSC-FSC**: [GDSC Farmingdale State College](https://gdsc.community.dev/farmingdale-state-college/)
+*   **GDSC-FSC**: [GDG on Campus Farmingdale State College](https://gdg.community.dev/gdg-on-campus-farmingdale-state-college-farmingdale-united-states/)
 
 <p align="right"><a href="#-table-of-contents">Back to top ⬆️</a></p>
 
